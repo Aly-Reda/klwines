@@ -1,6 +1,5 @@
 import datetime
 import requests
-import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -11,9 +10,8 @@ import pandas as pd
 import xlrd
 import codecs
 import os
-import sqlite3
 import glob
-#from web.data import compare as data
+
 
 class scrape:
     
@@ -67,18 +65,21 @@ class scrape:
             r='No Internet Connection'
         return r
 
+    def get_data_identifier(identifier):
+        identifier_id=identifier
+        wine_list={ 7:'Beer' ,10:'Distilled Spirits' ,0:'Other',23:'Sake',15:'Soda' ,5:'Wine - Dessert',1:'Wine - Red' ,3:'Wine - Rose' ,4:'Wine - Sparkling' ,2:'Wine - White'}
+        identifier_Name=wine_list[identifier]
+        return identifier_id , identifier_Name
 
 
     def data(iden=10):
+        iden, fileiden=scrape.get_data_identifier(iden)
         cwd = os.getcwd()
         path=cwd.replace('\\','\\\\')+r'\files'        
         if not os.path.exists(path):
             os.makedirs(path)
-        global ident
-        ident=str(iden)
-        wine_list={ 7:'Beer' ,10:'Distilled Spirits' ,0:'Other',23:'Sake',15:'Soda' ,5:'Wine - Dessert',1:'Wine - Red' ,3:'Wine - Rose' ,4:'Wine - Sparkling' ,2:'Wine - White'}
-        global fileiden
-        fileiden = wine_list[iden]
+        #global ident
+        #global fileiden
         wb = Workbook()
         ws = wb.active
         ws.append(["Date", "SKU", "Vintage","Item Name","Item URL","List Price","Quantity On Hand","Allocation"])
@@ -101,21 +102,15 @@ class scrape:
                 else:
                     pass
             current_page+=1
-        print('Data Scraped Successfully')
-        wb.save("files\\"+ident+"-"+fileiden+" "+str(datetime.datetime.now().strftime("[%H.%M] [%d-%m-%Y]"))+".xlsx")
-        print('Data Store in Excel Formate Successfully')
+        wb.save("files\\"+str(iden)+"-"+fileiden+" "+str(datetime.datetime.now().strftime("[%H.%M] [%d-%m-%Y]"))+".xlsx")
         return str(iden)
         
         
     def json():
         try:
             pd.read_excel("files\\"+ident+"-"+fileiden+" "+str(datetime.datetime.now().strftime("[%H.%M] [%d-%m-%Y]"))+".xlsx").to_json("files\\"+ident+"-"+fileiden+" "+str(datetime.datetime.now().strftime("[%H.%M] [%d-%m-%Y]"))+".json")
-            print('Data Store in Json Formate Successfully by Methode One')
-
         except:
             pd.read_excel(scrape.latest_one_file()).to_json(scrape.latest_one_file().replace(".xlsx",".json"))
-            print('Data Store in Json Formate Successfully by Methode Two')
-
 
     def latest_one_file():
         cwd = os.getcwd()
@@ -124,10 +119,10 @@ class scrape:
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
         Excel_Path = "files\\"+files[0].split('\\')[-1]
         Excel_name =files[0].split('\\')[-1]
-        print('Latest Excel Created File Path Send')
         return Excel_Path ,Excel_name 
 
     def latest_two_files():
+	
         cwd = os.getcwd()
         folder=cwd.replace('\\','\\\\')+r'\files'  
         files_path1 = os.path.join(folder, '*.xlsx')
@@ -138,14 +133,16 @@ class scrape:
         Excel1=Excel[0].split('\\')[-1]
         Json_Path  = "files\\"+json[0].split('\\')[-1]
         Json1=json[0].split('\\')[-1]
-        print('Latest Excel & Json Created File Path Send')
         return  Excel_Path, Json_Path ,Excel1 ,Json1
 
+
+
+#idenfirer
     def latest_two_Excel():
+        ident, fileiden=scrape.get_data_identifier(10)
         cwd = os.getcwd()
-        identires,fileideniers=data.get_data_identifier()
         folder=cwd.replace('\\','\\\\')+r'\\files'+r'\\'
-        files_path = os.path.join(folder, identires+"-"+fileideniers+'*.xlsx')
+        files_path = os.path.join(folder, str(ident)+"-"+fileiden+'*.xlsx')
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
         New_Excel = "files\\"+files[0].split('\\')[-1]
         #if it is the first time the New_Excel and Old_Excel are the same
@@ -156,3 +153,78 @@ class scrape:
         #Excel_name =files[0].split('\\')[-1]
         #print('Latest Excel Created File Path Send')
         return Old_Excel , New_Excel
+
+
+
+
+    def Excel_Compare():
+        file1,file2= scrape.latest_two_Excel()
+        dataFrame1 = pd.read_excel(str(file1))
+        data1=len(dataFrame1.iloc[:,0]) 
+        dataFrame2 = pd.read_excel(str(file2))
+        data2=len(dataFrame2.iloc[:,0])
+        if data1 == data2:
+            df1 = pd.read_excel(str(file1))
+            df2 = pd.read_excel(str(file2))
+            difference = df1[df1!=df2]    
+            xnr = difference.notnull().values.any()
+            if xnr == False:
+                flage=2
+            else:
+                flage=1
+        else:
+            flage=0
+
+        return flage
+
+#idenf
+    def base_email():
+        ident, fileiden=scrape.get_data_identifier(10)
+        base = scrape.Excel_Compare()
+        subject = 'Scraping Klwines Website '+str(ident)+"-"+fileiden
+        if base == 0 :
+            body = str(ident)+"-"+fileiden+' count: '+str(scrape.Page_Count(1,ident))+"\nStatus: Data Increament"
+            html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
+        elif base ==1 :
+            body = str(ident)+"-"+fileiden+' count: '+str(scrape.Page_Count(1,ident))+"\nStatus: Data Updated"
+            html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
+        elif base ==2 :
+            body = str(ident)+"-"+fileiden+' count: '+str(scrape.Page_Count(1,ident))+"\nStatus: Same Data"
+            html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
+        return subject,body,html1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##    def get_data_identifier(identifier):
+##        identifier_id=identifier
+##        wine_list={ 7:'Beer' ,10:'Distilled Spirits' ,0:'Other',23:'Sake',15:'Soda' ,5:'Wine - Dessert',1:'Wine - Red' ,3:'Wine - Rose' ,4:'Wine - Sparkling' ,2:'Wine - White'}
+##        identifier_Name=wine_list[identifier]
+##        return identifier_id , identifier_Name
+
+
+
