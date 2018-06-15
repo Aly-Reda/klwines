@@ -110,7 +110,9 @@ class scrape:
         try:
             pd.read_excel("files\\"+ident+"-"+fileiden+" "+str(datetime.datetime.now().strftime("[%H.%M] [%d-%m-%Y]"))+".xlsx").to_json("files\\"+ident+"-"+fileiden+" "+str(datetime.datetime.now().strftime("[%H.%M] [%d-%m-%Y]"))+".json")
         except:
-            pd.read_excel(scrape.latest_one_file()).to_json(scrape.latest_one_file().replace(".xlsx",".json"))
+            file = scrape.latest_one_file()[0]
+            file2=file.replace(".xlsx",".json")
+            pd.read_excel(file).to_json(file2)
 
     def latest_one_file():
         cwd = os.getcwd()
@@ -121,13 +123,13 @@ class scrape:
         Excel_name =files[0].split('\\')[-1]
         return Excel_Path ,Excel_name 
 
-    def latest_two_files():
-	
+    def latest_two_files():	
         cwd = os.getcwd()
-        folder=cwd.replace('\\','\\\\')+r'\files'  
+        folder=cwd.replace('\\','\\\\')+r'\\files'+r'\\'
         files_path1 = os.path.join(folder, '*.xlsx')
         files_path2 = os.path.join(folder, '*.json')
         Excel = sorted(glob.iglob(files_path1), key=os.path.getctime, reverse=True)
+        #print(Excel)
         json  = sorted(glob.iglob(files_path2), key=os.path.getctime, reverse=True)
         Excel_Path = "files\\"+Excel[0].split('\\')[-1]
         Excel1=Excel[0].split('\\')[-1]
@@ -184,13 +186,13 @@ class scrape:
         subject = 'Scraping Klwines Website '+str(ident)+"-"+fileiden
         if base == 0 :
             body = str(ident)+"-"+fileiden+' count: '+str(scrape.Page_Count(1,ident))+"\nStatus: Data Increament"
-            html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
+            html1="<h3 style='color: green;'>"+str(body.replace("\n","<br>"))+"</h3>"
         elif base ==1 :
             body = str(ident)+"-"+fileiden+' count: '+str(scrape.Page_Count(1,ident))+"\nStatus: Data Updated"
             html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
         elif base ==2 :
             body = str(ident)+"-"+fileiden+' count: '+str(scrape.Page_Count(1,ident))+"\nStatus: Same Data"
-            html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
+            html1="<h3 style='color: black;'>"+str(body.replace("\n","<br>"))+"</h3>"
         return subject,body,html1
 
 

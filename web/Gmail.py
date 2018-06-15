@@ -39,14 +39,13 @@ class get:
             filename , excel_name=code.latest_one_file()
             
         subject,body,html1  =code.base_email()
-        print(filename)
+        #print(filename)
         msg = MIMEMultipart()
         msg['From'] = email_user
         msg['To'] = email_send
         msg['Subject'] = subject
         msg.attach(MIMEText(body,'plain'))
         msg.attach(MIMEText(html1, 'html'))
-
         attachment  =open(filename,'rb')
         part = MIMEBase('application','octet-stream')
         part.set_payload((attachment).read())
@@ -83,7 +82,6 @@ class get:
         encoders.encode_base64(part1)
         part1.add_header('Content-Disposition',"attachment; filename= "+excel_name)
         msg.attach(part1)
-
         attachment2  =open(filename2,'rb')
         part2 = MIMEBase('application','octet-stream')
         part2.set_payload((attachment2).read())

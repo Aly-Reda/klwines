@@ -10,6 +10,15 @@
     #password           ='123456789asd!@#'
     #sendto             = 'samir.ahmed.abdelazem@gmail.com'
 
+import pickle
+def cookies(cookies_status):
+    data=[]
+    if cookies_status== 'r':
+        cookies = pickle.load(open("cookies.pkl", "rb"))
+    elif cookies_status== 'w':
+        for cookie in cookies:
+            data.append(cookie)
+        return data
 
 
 from web.get import scrape as code
@@ -157,7 +166,7 @@ row+=1
 name = tk.StringVar()
 nameEntered = ttk.Entry(win,width=12,textvariable=name )
 nameEntered.grid(column=0,row = row , columnspan=1, sticky="we")
-nameEntered.insert(0, '@gmail.com')
+nameEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
 #nameEntered.focus()
 
 
@@ -166,6 +175,7 @@ nameEntered.insert(0, '@gmail.com')
 password = tk.StringVar()
 passwordEntered = ttk.Entry(win, show="*",width=12,textvariable=password)
 passwordEntered.grid(column=1,row = row , columnspan=1, sticky="we")
+passwordEntered.insert(0, '123456789asd!@#')
 passwordEntered.focus()
 
 #CheckBox Keep
@@ -231,6 +241,7 @@ row+=1
 SendEmail = tk.StringVar()
 SendEmailEntered = ttk.Entry(win,width=12,textvariable=SendEmail)
 SendEmailEntered.grid(column=0,row = row , columnspan=2, sticky="we")
+SendEmailEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
 SendEmailEntered.focus()
 
 #CheckBox Keep
