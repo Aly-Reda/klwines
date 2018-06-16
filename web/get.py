@@ -202,7 +202,7 @@ class scrape:
                 seen = set()
                 seen_add = seen.add
                 files_name =[x for x in list1 if not (x in seen or seen_add(x))]
-                print(files_name)
+                #print(files_name)
             for x in files_name:
                 new.append(int(x.split('-')[0]))
         #the first run of the app when we have no files folder
@@ -218,7 +218,7 @@ class scrape:
             socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
             return True
         except:
-            return False
+            return True
 
 
 

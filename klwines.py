@@ -10,15 +10,6 @@
     #password           ='123456789asd!@#'
     #sendto             = 'samir.ahmed.abdelazem@gmail.com'
 
-import pickle
-def cookies(cookies_status):
-    data=[]
-    if cookies_status== 'r':
-        cookies = pickle.load(open("cookies.pkl", "rb"))
-    elif cookies_status== 'w':
-        for cookie in cookies:
-            data.append(cookie)
-        return data
 
 
 from web.get import scrape as code
@@ -29,10 +20,10 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-
+import pprint
 win = tk.Tk()
 win.title("Klwines Scraping")
-win.iconbitmap(r'klwines1.ico')
+win.iconbitmap(r'klwines.ico')
 
 global Statusrow
 global Statuscolumnspan
@@ -42,17 +33,7 @@ Statuscolumnspan =12
 ButtonCol=10
 
 wine_list={'Beer':7 ,'Distilled Spirits':10 ,'Other':0 ,'Sake':23 ,'Soda':15 ,'Wine - Dessert':5 ,'Wine - Red':1 ,'Wine - Rose':3 ,'Wine - Sparkling':4 ,'Wine - White':2}
-
-
-
-
-
-
-
-
-
-
-
+import os
 
 
 #Menu Bar
@@ -98,7 +79,7 @@ def ClickAction():
 
         if website_status == 'Website Working':
             idf=wine_list[str(number.get())]
-            print(idf)
+            #print(idf)
             scrape=code(idf)
             scrape.data()
             status = Label(win, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
@@ -168,6 +149,8 @@ passwordEntered.insert(0, '123456789asd!@#')
 passwordEntered.focus()
 
 #CheckBox Keep
+
+
 def inCheck1():
     keep=Keep1.get()
     if keep == 1:
@@ -275,9 +258,9 @@ def ClickAction3():
     if internet_connection == True :
         scrape=code()
         idf=wine_list[str(number.get())]
-        print(scrape.check_files_number())
+        #print(scrape.check_files_number())
         status_key = idf in scrape.check_files_number()
-        print(status_key)
+        #print(status_key)
         if status_key == True:
             send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
 
@@ -419,9 +402,48 @@ win.mainloop()
 
 
 
+##import pickle
+##
+##
+##def  pickle_store(array, status):
+##    if status == 'w':
+##        output = open('klwines.pkl', 'wb')
+##        pickle.dump(list, output)
+##        output.close()
+##    elif status == 'r':
+##        pkl_file = open('klwines.pkl', 'rb')
+##        data1 = pickle.load(pkl_file)
+##        pkl_file.close()
+##        return data1
 
 
+##scores = {} # scores is an empty dict already
+##target='klwines.packle'
+##if os.path.getsize(target) > 0:      
+##    with open(target, "rb") as f:
+##        try:
+##            unpickler = pickle.Unpickler(f)
+##            # if file is not empty scores will be equal
+##            # to the value unpickled
+##            scores = unpickler.load()
+##        except EOFError:
+##            scores = list()  # or whatever you want
+##
+###print(scores[0])
+##print(scores)
 
+#with open ('klwines.pkl', 'rb') as pickel_file :
+  #  new_data=pickle.load(pickel_file)
+ #   print(new_data)
+
+#print(new_data[1])
+##
+##save_data = { 1 : Keep1.get() , 2: Keep1.get(), 3 : name.get() , 4 : password.get() , 5: SendEmail.get()}
+##
+##pickle_out = open('klwines.pickle', 'wb')
+##pickle.dump(save_data,pickle_out )
+##pickle_out.close
+##store= pickle_store(save_data , 'w')
 
 
 

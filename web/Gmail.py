@@ -36,12 +36,12 @@ class get:
 
     def email_send(self):
         s=code(self.identifier)
-        try:
-            filename , excel_name = s.latest_one_file()
-        except:
-            s=code()
-            s.data()
-            filename , excel_name = s.latest_one_file()
+        #try:
+        filename , excel_name = s.latest_one_file()
+        #except:
+         #   s=code()
+          #  s.data()
+           # filename , excel_name = s.latest_one_file()
         subject,body,html1  = s.base_email()
         #print(filename)
         msg = MIMEMultipart()
@@ -61,7 +61,7 @@ class get:
         server.starttls()
         server.login( self.User_Email ,self.User_Password)
         server.sendmail( self.User_Email , self.Send_To ,text)
-        print("Email Is Sent Successfully")
+        print(str(subject)+' Excel File Attached\nEmail Send Successfully')
         server.quit()
 
     def email_send_two_attachments(self):
@@ -70,8 +70,7 @@ class get:
         try:
             filename1,filename2 , excel_name,jason_name=s.latest_two_files()
         except:
-            s=code()
-            s.data()
+         #   s=code()
             s.json()
             filename1,filename2 , excel_name,jason_name=s.latest_two_files()
         subject,body,html1  =s.base_email()
@@ -100,7 +99,7 @@ class get:
         server.starttls()
         server.login(self.User_Email, self.User_Password)
         server.sendmail( self.User_Email , self.Send_To , text)
-        print("Email Is Sent Successfully")
+        print(str(subject)+' Excel & Json Files Attached\nEmail Send Successfully')
         server.quit()
 
 
