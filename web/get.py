@@ -238,7 +238,6 @@ class scrape:
 
 
 
-
 ##    def get_data_identifier(identifier):
 ##        identifier=identifier
 ##        wine_list={ 7:'Beer' ,10:'Distilled Spirits' ,0:'Other',23:'Sake',15:'Soda' ,5:'Wine - Dessert',1:'Wine - Red' ,3:'Wine - Rose' ,4:'Wine - Sparkling' ,2:'Wine - White'}

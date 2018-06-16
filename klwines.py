@@ -90,25 +90,41 @@ numberChosen.current(1)
 #Button Scrape
 def ClickAction():
     scrape=code()
+    internet_connection = scrape.internet() 
     website_status= scrape.Check_Connection()
     status = Label(win, text=website_status,bd=1 , relief =SUNKEN , anchor=W )
     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+    if internet_connection == True:
 
-    if website_status == 'Website Working':
-        idf=wine_list[str(number.get())]
-        print(idf)
-        scrape=code(idf)
-        scrape.data()
-        status = Label(win, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
+        if website_status == 'Website Working':
+            idf=wine_list[str(number.get())]
+            print(idf)
+            scrape=code(idf)
+            scrape.data()
+            status = Label(win, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            x=messagebox.showinfo(message= "Scraping "+str(idf)+"-"+ number.get()+" Done" )
+            if x=='ok':
+                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            
+            if chVarUn.get() == 1:
+                scrape.json()
+        else:
+            status = Label(win, text="Please wait until the website back" ,bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            x=messagebox.showinfo(message= "Please wait until the website back" )
+            if x=='ok':
+                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+    else:
+        status = Label(win, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-        x=messagebox.showinfo(message= "Scraping "+str(idf)+"-"+ number.get()+" Done" )
+        x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
             status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-        
-        if chVarUn.get() == 1:
-            scrape.json()
-            
+ 
 
 action = ttk.Button(win,text = "Scrape" ,command=ClickAction).grid(column = ButtonCol, row = row)
 
@@ -176,21 +192,30 @@ Keep1check1.grid(column = 3, row = row, sticky = tk.W)
 #Button Check
 def ClickAction2():
     send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+    scrape=code()
+    internet_connection = scrape.internet() 
     Gmail_Status=send.login_check()
-    print(Gmail_Status)
-    if Gmail_Status == 'Login Successful':
-        status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
-        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-        x=messagebox.showinfo(message=  Gmail_Status )
-        if x=='ok':
-            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+    if internet_connection == True:
+        if Gmail_Status == 'Login Successful':
+            status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            x=messagebox.showinfo(message=  Gmail_Status )
+            if x=='ok':
+                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
-            
-    elif Gmail_Status == 'Login Failed':
-        status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
+                
+        elif Gmail_Status == 'Login Failed':
+            status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
+            if x=='ok':
+                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+    else:
+        status = Label(win, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-        x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
+        x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
             status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
@@ -246,52 +271,68 @@ Keep2check1.grid(column = 3, row = row, sticky = tk.W)
 
 def ClickAction3():
     scrape=code()
-    idf=wine_list[str(number.get())]
-    print(scrape.check_files_number())
-    status_key = idf in scrape.check_files_number()
-    print(status_key)
-    if status_key == True:
-        send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+    internet_connection = scrape.internet() 
+    if internet_connection == True :
+        scrape=code()
+        idf=wine_list[str(number.get())]
+        print(scrape.check_files_number())
+        status_key = idf in scrape.check_files_number()
+        print(status_key)
+        if status_key == True:
+            send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
 
-    #user               = 'samir.ahmed.abdelazem@gmail.com'
-    #password           ='123456789asd!@#'
-    #sendto             = 'samir.ahmed.abdelazem@gmail.com'
-    #user               = name.get()
-    #password1           = password.get()
-    #sendto             = SendEmail.get()
+        #user               = 'samir.ahmed.abdelazem@gmail.com'
+        #password           ='123456789asd!@#'
+        #sendto             = 'samir.ahmed.abdelazem@gmail.com'
+        #user               = name.get()
+        #password1           = password.get()
+        #sendto             = SendEmail.get()
 
-##    try:    
-    #ahmed.email_send(user,password,sendto)
-        if chVarUn.get() == 0:
-            send.email_send()
-            status = Label(win, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
+    ##    try:    
+        #ahmed.email_send(user,password,sendto)
+            if chVarUn.get() == 0:
+                send.email_send()
+                status = Label(win, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+                x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+                if x=='ok':
+                    status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                    status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+
+            elif chVarUn.get() == 1:
+                send.email_send_two_attachments()
+                status = Label(win, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+                x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
+                if x=='ok':
+                    status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                    status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+        ##    except:
+        ##        status = Label(win, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
+        ##        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+        else:
+            status = Label(win, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-            x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+            x=messagebox.showinfo(message= 'Please Scrape First')
             if x=='ok':
                 status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
-
-        elif chVarUn.get() == 1:
-            send.email_send_two_attachments()
-            status = Label(win, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
-            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-            x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
-            if x=='ok':
-                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
-                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-
-##    except:
-##        status = Label(win, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
-##        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
     else:
-        status = Label(win, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
+        status = Label(win, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-        x=messagebox.showinfo(message= 'Please Scrape First')
+        x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
             status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+
+
+
 
 action3 = ttk.Button(win,text = "SEND" ,command=ClickAction3).grid(column = ButtonCol, row = row)
 
