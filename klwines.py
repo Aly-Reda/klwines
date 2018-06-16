@@ -22,7 +22,7 @@ def cookies(cookies_status):
 
 
 from web.get import scrape as code
-from web.Gmail import get 
+from web.Gmail import get  as sendData 
 import re
 
 from tkinter import *  
@@ -41,38 +41,10 @@ Statusrow =10
 Statuscolumnspan =12
 ButtonCol=10
 
+wine_list={'Beer':7 ,'Distilled Spirits':10 ,'Other':0 ,'Sake':23 ,'Soda':15 ,'Wine - Dessert':5 ,'Wine - Red':1 ,'Wine - Rose':3 ,'Wine - Sparkling':4 ,'Wine - White':2}
 
 
 
-
-
-def gmail( ):
-    usermail = user_email.get()
-    receivermail=receiver_email.get()           
-    server=smtplib.SMTP('smtp.gmail.com:587')
-    pass_word=password.get()
-    subject=subj.get()
-    #This allow you to include a subject by adding from, to and subject 
-    line
-    main_message=body.get('1.0', 'end-1c')
-    Body="""From: Name here <usermail>
-    To: <receivermail>
-    Subject:%s 
-
-    %s
-    """ %(subject,main_message )
-    try:
-        server=smtplib.SMTP('smtp.gmail.com:587')
-        server.ehlo()
-        server.starttls()
-        server.login(usermail, pass_word  )
-        server.sendmail(usermail,receivermail, Body )
-
-        text.insert(1.0, 'message sent')
-        #error handling
-    except  (smtplib.SMTPException,ConnectionRefusedError,OSError):
-        text.insert(1.0, 'message not sent')
-    finally:server.quit()
 
 
 
@@ -115,29 +87,30 @@ numberChosen['values']=('Beer','Distilled Spirits','Other','Sake','Soda','Wine -
 numberChosen.grid(column = 0, row = row , columnspan=8, sticky="we")
 numberChosen.current(1)
 
-
 #Button Scrape
 def ClickAction():
-    website_status= code.Check_Connection()
+    scrape=code()
+    website_status= scrape.Check_Connection()
     status = Label(win, text=website_status,bd=1 , relief =SUNKEN , anchor=W )
     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
-
     if website_status == 'Website Working':
-        
-        wine_list={'Beer':7 ,'Distilled Spirits':10 ,'Other':0 ,'Sake':23 ,'Soda':15 ,'Wine - Dessert':5 ,'Wine - Red':1 ,'Wine - Rose':3 ,'Wine - Sparkling':4 ,'Wine - White':2}
         idf=wine_list[str(number.get())]
-        sc=(code.data(idf))
-        status = Label(win, text="Scraping "+sc+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
+        print(idf)
+        scrape=code(idf)
+        scrape.data()
+        status = Label(win, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-
+        x=messagebox.showinfo(message= "Scraping "+str(idf)+"-"+ number.get()+" Done" )
+        if x=='ok':
+            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+        
         if chVarUn.get() == 1:
-            code.json()
+            scrape.json()
             
 
 action = ttk.Button(win,text = "Scrape" ,command=ClickAction).grid(column = ButtonCol, row = row)
-
-
 
 
 # Frame 2
@@ -202,11 +175,16 @@ Keep1check1.grid(column = 3, row = row, sticky = tk.W)
 
 #Button Check
 def ClickAction2():
-    Gmail_Status=get.login_check(name.get(),password.get())
+    send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+    Gmail_Status=send.login_check()
     print(Gmail_Status)
     if Gmail_Status == 'Login Successful':
         status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+        x=messagebox.showinfo(message=  Gmail_Status )
+        if x=='ok':
+            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
             
     elif Gmail_Status == 'Login Failed':
@@ -251,6 +229,7 @@ def inCheck2():
     if keep == 1:
         SendEmailEntered = ttk.Entry(win,width=12,textvariable=SendEmail , state = 'disabled' )
         SendEmailEntered.grid(column=0,row = 5 , columnspan=2, sticky="we")
+
         
     elif keep == 0:
         SendEmailEntered = ttk.Entry(win,width=12,textvariable=SendEmail )
@@ -266,28 +245,53 @@ Keep2check1.grid(column = 3, row = row, sticky = tk.W)
 
 
 def ClickAction3():
+    scrape=code()
+    idf=wine_list[str(number.get())]
+    print(scrape.check_files_number())
+    status_key = idf in scrape.check_files_number()
+    print(status_key)
+    if status_key == True:
+        send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+
     #user               = 'samir.ahmed.abdelazem@gmail.com'
     #password           ='123456789asd!@#'
     #sendto             = 'samir.ahmed.abdelazem@gmail.com'
-    user               = name.get()
-    password1           = password.get()
-    sendto             = SendEmail.get()
+    #user               = name.get()
+    #password1           = password.get()
+    #sendto             = SendEmail.get()
 
 ##    try:    
     #ahmed.email_send(user,password,sendto)
-    if chVarUn.get() == 0:
-        get.email_send(user,password1,sendto)
-        status = Label(win, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
-        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+        if chVarUn.get() == 0:
+            send.email_send()
+            status = Label(win, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+            if x=='ok':
+                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
-    elif chVarUn.get() == 1:
-        get.email_send_two_attachments(user,password1,sendto)
-        status = Label(win, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
-        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+        elif chVarUn.get() == 1:
+            send.email_send_two_attachments()
+            status = Label(win, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+            x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
+            if x=='ok':
+                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
 ##    except:
 ##        status = Label(win, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
 ##        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
+    else:
+        status = Label(win, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
+        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+        x=messagebox.showinfo(message= 'Please Scrape First')
+        if x=='ok':
+            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+            status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 action3 = ttk.Button(win,text = "SEND" ,command=ClickAction3).grid(column = ButtonCol, row = row)
 
@@ -335,7 +339,34 @@ win.mainloop()
 
 
 
-
+##
+##def gmail( ):
+##    usermail = user_email.get()
+##    receivermail=receiver_email.get()           
+##    server=smtplib.SMTP('smtp.gmail.com:587')
+##    pass_word=password.get()
+##    subject=subj.get()
+##    #This allow you to include a subject by adding from, to and subject 
+##    line
+##    main_message=body.get('1.0', 'end-1c')
+##    Body="""From: Name here <usermail>
+##    To: <receivermail>
+##    Subject:%s 
+##
+##    %s
+##    """ %(subject,main_message )
+##    try:
+##        server=smtplib.SMTP('smtp.gmail.com:587')
+##        server.ehlo()
+##        server.starttls()
+##        server.login(usermail, pass_word  )
+##        server.sendmail(usermail,receivermail, Body )
+##
+##        text.insert(1.0, 'message sent')
+##        #error handling
+##    except  (smtplib.SMTPException,ConnectionRefusedError,OSError):
+##        text.insert(1.0, 'message not sent')
+##    finally:server.quit()
 
 
 
@@ -355,16 +386,16 @@ win.mainloop()
 
 
 
-wine_list={'Beer':7 ,
- 'Distilled Spirits':10 ,
- 'Other':0 ,
- 'Sake':23 ,
- 'Soda':15 ,
- 'Wine - Dessert':5 ,
- 'Wine - Red':1 ,
- 'Wine - Rose':3 ,
- 'Wine - Sparkling':4 ,
- 'Wine - White':2 }
+##wine_list={'Beer':7 ,
+## 'Distilled Spirits':10 ,
+## 'Other':0 ,
+## 'Sake':23 ,
+## 'Soda':15 ,
+## 'Wine - Dessert':5 ,
+## 'Wine - Red':1 ,
+## 'Wine - Rose':3 ,
+## 'Wine - Sparkling':4 ,
+## 'Wine - White':2 }
 
 
 

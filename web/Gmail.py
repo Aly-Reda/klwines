@@ -13,36 +13,40 @@ import codecs
 import os
 import sqlite3
 from web.get import scrape as code
-
 class get:
     
-    def __init__(self):
-        pass
+    def __init__(self , User_Email , User_Password , Send_To , identifier_value ):
+        self.User_Email = User_Email
+        self.User_Password = User_Password
+        self.Send_To = Send_To
+        self.identifier_value=identifier_value 
+        wine_list={ 'Beer':7 ,'Distilled Spirits':10 ,'Other':0,'Sake':23,'Soda':15 ,'Wine - Dessert':5,'Wine - Red':1 ,'Wine - Rose':3 ,'Wine - Sparkling':4 ,'Wine - White':2}
+        self.identifier= wine_list[self.identifier_value]
 
-
-    def login_check(user,password):
+    def login_check(self):
         try:  
             server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             server.ehlo()
-            server.login(user, password)
+            server.login( self.User_Email , self.User_Password )
             Gmail_Status='Login Successful'
         except:  
             Gmail_Status='Login Failed'
         return Gmail_Status
     
 
-    def email_send(email_user,email_password,email_send):
+    def email_send(self):
+        s=code(self.identifier)
         try:
-            filename , excel_name=code.latest_one_file()
+            filename , excel_name = s.latest_one_file()
         except:
-            code.data()
-            filename , excel_name=code.latest_one_file()
-            
-        subject,body,html1  =code.base_email()
+            s=code()
+            s.data()
+            filename , excel_name = s.latest_one_file()
+        subject,body,html1  = s.base_email()
         #print(filename)
         msg = MIMEMultipart()
-        msg['From'] = email_user
-        msg['To'] = email_send
+        msg['From'] = self.User_Email
+        msg['To'] = self.Send_To
         msg['Subject'] = subject
         msg.attach(MIMEText(body,'plain'))
         msg.attach(MIMEText(html1, 'html'))
@@ -55,24 +59,27 @@ class get:
         text = msg.as_string()
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
-        server.login(email_user,email_password)
-        server.sendmail(email_user,email_send,text)
+        server.login( self.User_Email ,self.User_Password)
+        server.sendmail( self.User_Email , self.Send_To ,text)
         print("Email Is Sent Successfully")
         server.quit()
 
-    def email_send_two_attachments(email_user,email_password,email_send):
+    def email_send_two_attachments(self):
+        s=code(self.identifier)
+
         try:
-            filename1,filename2 , excel_name,jason_name=code.latest_two_files()
+            filename1,filename2 , excel_name,jason_name=s.latest_two_files()
         except:
-            code.data()
-            code.json()
-            filename1,filename2 , excel_name,jason_name=code.latest_two_files()
-        subject,body,html1  =code.base_email()
+            s=code()
+            s.data()
+            s.json()
+            filename1,filename2 , excel_name,jason_name=s.latest_two_files()
+        subject,body,html1  =s.base_email()
         #print(excel_name)
         #print(jason_name)
         msg = MIMEMultipart()
-        msg['From'] = email_user
-        msg['To'] = email_send
+        msg['From'] = self.User_Email
+        msg['To'] = self.Send_To
         msg['Subject'] = subject
         msg.attach(MIMEText(body,'plain'))
         msg.attach(MIMEText(html1, 'html'))
@@ -91,8 +98,8 @@ class get:
         text = msg.as_string()
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
-        server.login(email_user,email_password)
-        server.sendmail(email_user,email_send,text)
+        server.login(self.User_Email, self.User_Password)
+        server.sendmail( self.User_Email , self.Send_To , text)
         print("Email Is Sent Successfully")
         server.quit()
 
