@@ -21,9 +21,32 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import pprint
+
 win = tk.Tk()
 win.title("Klwines Scraping")
 win.iconbitmap(r'klwines.ico')
+#win.geometry('350x240')
+win.resizable(False, False)
+
+#center
+# Gets the requested values of the height and widht.
+#windowWidth = win.winfo_reqwidth()
+#windowHeight = win.winfo_reqheight()
+#print("Width",windowWidth,"Height",windowHeight)
+# Gets both half the screen width/height and window width/height
+#positionRight = int(win.winfo_screenwidth() - windowWidth)
+#positionDown = int(win.winfo_screenheight() - windowHeight)
+# Positions the window in the center of the page.
+#win.geometry("+{}+{}".format(positionRight, positionDown))
+
+
+
+
+
+
+
+
+
 
 global Statusrow
 global Statuscolumnspan
@@ -36,19 +59,65 @@ wine_list={'Beer':7 ,'Distilled Spirits':10 ,'Other':0 ,'Sake':23 ,'Soda':15 ,'W
 import os
 
 
+
+#tabs
+tab_control = ttk.Notebook(win)
+tab1 = ttk.Frame(tab_control)
+tab2 = ttk.Frame(tab_control)
+tab3 = ttk.Frame(tab_control)
+tab4 = ttk.Frame(tab_control)
+
+tab_control.add(tab1, text='    Manual    ')
+tab_control.add(tab2, text='    Schedule    ')
+tab_control.add(tab3, text='    Logs     ')
+tab_control.add(tab4, text='   About Klwines ')
+
+
+#lbl2 = Label(tab2, text= 'label2')
+#lbl2.grid(column=0, row=0)
+
+tab_control.pack(expand=1, fill='both', padx = 10, pady = 10)
+
+
+
+
+
+
+
+
+
+
 #Menu Bar
 menubar = Menu(win)
 filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="Logs")
-filemenu.add_command(label="Automatic")
+
+def Schedulemenuclick():
+    tab_control.select(tab2)
+filemenu.add_command(label="Schedule" ,  command = Schedulemenuclick)
+
+
+def logsmenuclick():
+    tab_control.select(tab3)
+    
+filemenu.add_command(label="Logs" , command =logsmenuclick)
+
+
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=win.quit)
 filemenu2 = Menu(menubar, tearoff=0)
 filemenu2.add_separator()
-filemenu2.add_command(label="About Klwines", command=win.quit)
+
+def aboutmenuclick():
+    tab_control.select(tab4)
+
+filemenu2.add_command(label="About Klwines", command=aboutmenuclick)
+
 menubar.add_cascade(label="Options", menu=filemenu)
 menubar.add_cascade(label="Help", menu=filemenu2)
 win.config(menu=menubar)
+
+
+
 
 
 
@@ -57,13 +126,13 @@ row = 0
 
 
 #label Choose Category
-ttk.Label(win,text = "Choose Category:").grid(column=0,row=row)
+ttk.Label(tab1,text = "Choose Category:").grid(column=0,row=row)
 
 row+=1
 
 #Combobox
 number = tk.StringVar()
-numberChosen = ttk.Combobox(win,width=12,textvariable=number,state='readonly')
+numberChosen = ttk.Combobox(tab1,width=12,textvariable=number,state='readonly')
 numberChosen['values']=('Beer','Distilled Spirits','Other','Sake','Soda','Wine - Dessert','Wine - Red','Wine - Rose','Wine - Sparkling','Wine - White')
 numberChosen.grid(column = 0, row = row , columnspan=8, sticky="we")
 numberChosen.current(1)
@@ -73,7 +142,7 @@ def ClickAction():
     scrape=code()
     internet_connection = scrape.internet() 
     website_status= scrape.Check_Connection()
-    status = Label(win, text=website_status,bd=1 , relief =SUNKEN , anchor=W )
+    status = Label(tab1, text=website_status,bd=1 , relief =SUNKEN , anchor=W )
     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
     if internet_connection == True:
 
@@ -82,43 +151,43 @@ def ClickAction():
             #print(idf)
             scrape=code(idf)
             scrape.data()
-            status = Label(win, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message= "Scraping "+str(idf)+"-"+ number.get()+" Done" )
             if x=='ok':
-                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             
             if chVarUn.get() == 1:
                 scrape.json()
         else:
-            status = Label(win, text="Please wait until the website back" ,bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text="Please wait until the website back" ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message= "Please wait until the website back" )
             if x=='ok':
-                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
     else:
-        status = Label(win, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
+        status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
-            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
  
 
-action = ttk.Button(win,text = "Scrape" ,command=ClickAction).grid(column = ButtonCol, row = row)
+action = ttk.Button(tab1,text = "Scrape" ,command=ClickAction).grid(column = ButtonCol, row = row)
 
 
 # Frame 2
 row+=1
 
 #label Gmail
-aLabel = ttk.Label(win , text = 'Gmail:')
+aLabel = ttk.Label(tab1 , text = 'Gmail:')
 aLabel.grid(column = 0, row = row , columnspan=1, sticky="we")
 
 #label Password
-aLabel2 = ttk.Label(win , text = 'Password:')
+aLabel2 = ttk.Label(tab1 , text = 'Password:')
 aLabel2.grid(column = 1, row = row , columnspan=1, sticky="we")
 
 row+=1
@@ -134,7 +203,7 @@ row+=1
 #validatecommand= OnWriteEmail
 #global name 
 name = tk.StringVar()
-nameEntered = ttk.Entry(win,width=12,textvariable=name )
+nameEntered = ttk.Entry(tab1,width=12,textvariable=name )
 nameEntered.grid(column=0,row = row , columnspan=1, sticky="we")
 nameEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
 #nameEntered.focus()
@@ -143,7 +212,7 @@ nameEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
 
 #FieldText Password
 password = tk.StringVar()
-passwordEntered = ttk.Entry(win, show="*",width=12,textvariable=password)
+passwordEntered = ttk.Entry(tab1, show="*",width=12,textvariable=password)
 passwordEntered.grid(column=1,row = row , columnspan=1, sticky="we")
 passwordEntered.insert(0, '123456789asd!@#')
 passwordEntered.focus()
@@ -154,21 +223,21 @@ passwordEntered.focus()
 def inCheck1():
     keep=Keep1.get()
     if keep == 1:
-        nameEntered = ttk.Entry(win,width=12,textvariable=name , state = 'disabled' )
+        nameEntered = ttk.Entry(tab1,width=12,textvariable=name , state = 'disabled' )
         nameEntered.grid(column=0,row = 3 , columnspan=1, sticky="we")
         passwordEntered = ttk.Entry(win, show="*",width=12,textvariable=password , state = 'disabled')
         passwordEntered.grid(column=1,row = 3 , columnspan=1, sticky="we")
         
     elif keep == 0:
-        nameEntered = ttk.Entry(win,width=12,textvariable=name )
+        nameEntered = ttk.Entry(tab1,width=12,textvariable=name )
         nameEntered.grid(column=0,row = 3 , columnspan=1, sticky="we")
-        passwordEntered = ttk.Entry(win, show="*",width=12,textvariable=password)
+        passwordEntered = ttk.Entry(tab1, show="*",width=12,textvariable=password)
         passwordEntered.grid(column=1,row = 3 , columnspan=1, sticky="we")
 
 
 
 Keep1 = tk.IntVar()
-Keep1check1 = tk.Checkbutton(win, text = "Keep" , variable = Keep1 ,command= inCheck1)
+Keep1check1 = tk.Checkbutton(tab1, text = "Keep" , variable = Keep1 ,command= inCheck1)
 Keep1check1.grid(column = 3, row = row, sticky = tk.W)
 
 
@@ -180,32 +249,32 @@ def ClickAction2():
     Gmail_Status=send.login_check()
     if internet_connection == True:
         if Gmail_Status == 'Login Successful':
-            status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message=  Gmail_Status )
             if x=='ok':
-                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
                 
         elif Gmail_Status == 'Login Failed':
-            status = Label(win, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
             if x=='ok':
-                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
     else:
-        status = Label(win, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
+        status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
-            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 
 
-action1 = ttk.Button(win,text = "Connect" ,command= ClickAction2 ).grid(column = ButtonCol, row = row)
+action1 = ttk.Button(tab1,text = "Connect" ,command= ClickAction2 ).grid(column = ButtonCol, row = row)
 
 
 
@@ -217,7 +286,7 @@ action1 = ttk.Button(win,text = "Connect" ,command= ClickAction2 ).grid(column =
 row+=1
 
 #label Send To
-aLabel = ttk.Label(win , text = 'Send To:')
+aLabel = ttk.Label(tab1 , text = 'Send To:')
 aLabel.grid(column = 0, row = row , columnspan=1, sticky="we")
 
 
@@ -225,7 +294,7 @@ row+=1
 #FieldText Send To
 #global SendEmail
 SendEmail = tk.StringVar()
-SendEmailEntered = ttk.Entry(win,width=12,textvariable=SendEmail)
+SendEmailEntered = ttk.Entry(tab1,width=12,textvariable=SendEmail)
 SendEmailEntered.grid(column=0,row = row , columnspan=2, sticky="we")
 SendEmailEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
 SendEmailEntered.focus()
@@ -235,18 +304,18 @@ SendEmailEntered.focus()
 def inCheck2():
     keep=Keep2.get()
     if keep == 1:
-        SendEmailEntered = ttk.Entry(win,width=12,textvariable=SendEmail , state = 'disabled' )
+        SendEmailEntered = ttk.Entry(tab1,width=12,textvariable=SendEmail , state = 'disabled' )
         SendEmailEntered.grid(column=0,row = 5 , columnspan=2, sticky="we")
 
         
     elif keep == 0:
-        SendEmailEntered = ttk.Entry(win,width=12,textvariable=SendEmail )
+        SendEmailEntered = ttk.Entry(tab1,width=12,textvariable=SendEmail )
         SendEmailEntered.grid(column=0,row = 5 , columnspan=2, sticky="we")
 
 
 
 Keep2 = tk.IntVar()
-Keep2check1 = tk.Checkbutton(win, text = "Keep" , variable = Keep2 , command= inCheck2)
+Keep2check1 = tk.Checkbutton(tab1, text = "Keep" , variable = Keep2 , command= inCheck2)
 Keep2check1.grid(column = 3, row = row, sticky = tk.W)
 
 #Button Check
@@ -275,49 +344,49 @@ def ClickAction3():
         #ahmed.email_send(user,password,sendto)
             if chVarUn.get() == 0:
                 send.email_send()
-                status = Label(win, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
                 x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
                 if x=='ok':
-                    status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                    status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 
             elif chVarUn.get() == 1:
                 send.email_send_two_attachments()
-                status = Label(win, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
                 x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
                 if x=='ok':
-                    status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                    status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
         ##    except:
-        ##        status = Label(win, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
+        ##        status = Label(tab1, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
         ##        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
         else:
-            status = Label(win, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message= 'Please Scrape First')
             if x=='ok':
-                status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 
     else:
-        status = Label(win, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
+        status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
-            status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+            status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 
 
 
 
-action3 = ttk.Button(win,text = "SEND" ,command=ClickAction3).grid(column = ButtonCol, row = row)
+action3 = ttk.Button(tab1,text = "SEND" ,command=ClickAction3).grid(column = ButtonCol, row = row)
 
 
 
@@ -326,12 +395,12 @@ action3 = ttk.Button(win,text = "SEND" ,command=ClickAction3).grid(column = Butt
 row+=1
 # Frame 4
 chVarDis = tk.IntVar()
-check1 = tk.Checkbutton(win, text = "Excel" , variable = chVarDis, state = 'disabled')
+check1 = tk.Checkbutton(tab1, text = "Excel" , variable = chVarDis, state = 'disabled')
 check1.select()
 check1.grid(column = 0, row = row, sticky = tk.W)
 
 chVarUn = tk.IntVar()
-check2 = tk.Checkbutton(win, text = 'Json', variable = chVarUn)
+check2 = tk.Checkbutton(tab1, text = 'Json', variable = chVarUn)
 check2.deselect()
 check2.grid(column =  1, row = row, sticky=tk.N)
 
@@ -339,17 +408,8 @@ check2.grid(column =  1, row = row, sticky=tk.N)
 
 
 
-
-
-
-
-
-
-
-
-
 #Frame Status
-status = Label(win, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 
