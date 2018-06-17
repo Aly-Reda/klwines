@@ -212,37 +212,25 @@ class scrape:
 
 
 
-    def internet(host="8.8.8.8", port=53, timeout=3):
-        try:
-            socket.setdefaulttimeout(timeout)
-            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-            return True
-        except:
-            return True
+    def internet (self):
+      REMOTE_SERVER = "www.google.com"
+      try:
+        # see if we can resolve the host name -- tells us if there is
+        # a DNS listening
+        host = socket.gethostbyname(REMOTE_SERVER)
+        # connect to the host -- tells us if the host is actually
+        # reachable
+        s = socket.create_connection((host, 80), 2)
+        return True
+      except:
+         pass
+      return False
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-##    def get_data_identifier(identifier):
-##        identifier=identifier
-##        wine_list={ 7:'Beer' ,10:'Distilled Spirits' ,0:'Other',23:'Sake',15:'Soda' ,5:'Wine - Dessert',1:'Wine - Red' ,3:'Wine - Rose' ,4:'Wine - Sparkling' ,2:'Wine - White'}
-##        identifier_Name=wine_list[identifier]
-##        return identifier , identifier_Name
 
 
 

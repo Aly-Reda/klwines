@@ -225,7 +225,7 @@ def inCheck1():
     if keep == 1:
         nameEntered = ttk.Entry(tab1,width=12,textvariable=name , state = 'disabled' )
         nameEntered.grid(column=0,row = 3 , columnspan=1, sticky="we")
-        passwordEntered = ttk.Entry(win, show="*",width=12,textvariable=password , state = 'disabled')
+        passwordEntered = ttk.Entry(tab1, show="*",width=12,textvariable=password , state = 'disabled')
         passwordEntered.grid(column=1,row = 3 , columnspan=1, sticky="we")
         
     elif keep == 0:
