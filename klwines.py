@@ -10,7 +10,7 @@
     #password           ='123456789asd!@#'
     #sendto             = 'samir.ahmed.abdelazem@gmail.com'
 
-
+import pickle
 
 from web.get import scrape as code
 from web.Gmail import get  as sendData 
@@ -20,7 +20,6 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-import pprint
 
 win = tk.Tk()
 win.title("Klwines Scraping")
@@ -40,12 +39,15 @@ win.resizable(False, False)
 #win.geometry("+{}+{}".format(positionRight, positionDown))
 
 
+file_store=[]  
+try:
+    with open('data.pickle', 'rb') as f:
+        data = pickle.load(f)
+    file_store=data
+except:
+    file_store=['0','0','','','']
 
-
-
-
-
-
+print('file stored',file_store)
 
 
 global Statusrow
@@ -205,7 +207,13 @@ row+=1
 name = tk.StringVar()
 nameEntered = ttk.Entry(tab1,width=12,textvariable=name )
 nameEntered.grid(column=0,row = row , columnspan=1, sticky="we")
-nameEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
+if file_store !=[0,0,"","",""]:
+    nameEntered.insert(0, file_store[2])
+else:
+    nameEntered.insert(0, '')
+
+
+
 #nameEntered.focus()
 
 
@@ -214,31 +222,22 @@ nameEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
 password = tk.StringVar()
 passwordEntered = ttk.Entry(tab1, show="*",width=12,textvariable=password)
 passwordEntered.grid(column=1,row = row , columnspan=1, sticky="we")
-passwordEntered.insert(0, '123456789asd!@#')
-passwordEntered.focus()
+if file_store !=[0,0," "," "," "]:
+    passwordEntered.insert(0, file_store[3])
+else:
+    passwordEntered.insert(0, '')
+
+
+
+
+#passwordEntered.focus()
 
 #CheckBox Keep
-
-
-def inCheck1():
-    keep=Keep1.get()
-    if keep == 1:
-        nameEntered = ttk.Entry(tab1,width=12,textvariable=name , state = 'disabled' )
-        nameEntered.grid(column=0,row = 3 , columnspan=1, sticky="we")
-        passwordEntered = ttk.Entry(tab1, show="*",width=12,textvariable=password , state = 'disabled')
-        passwordEntered.grid(column=1,row = 3 , columnspan=1, sticky="we")
-        
-    elif keep == 0:
-        nameEntered = ttk.Entry(tab1,width=12,textvariable=name )
-        nameEntered.grid(column=0,row = 3 , columnspan=1, sticky="we")
-        passwordEntered = ttk.Entry(tab1, show="*",width=12,textvariable=password)
-        passwordEntered.grid(column=1,row = 3 , columnspan=1, sticky="we")
-
-
-
 Keep1 = tk.IntVar()
-Keep1check1 = tk.Checkbutton(tab1, text = "Keep" , variable = Keep1 ,command= inCheck1)
+Keep1check1 = tk.Checkbutton(tab1, text = "Keep" , variable = Keep1)
 Keep1check1.grid(column = 3, row = row, sticky = tk.W)
+if file_store[0] == '1':
+    Keep1check1.select()
 
 
 #Button Check
@@ -296,27 +295,25 @@ row+=1
 SendEmail = tk.StringVar()
 SendEmailEntered = ttk.Entry(tab1,width=12,textvariable=SendEmail)
 SendEmailEntered.grid(column=0,row = row , columnspan=2, sticky="we")
-SendEmailEntered.insert(0, 'samir.ahmed.abdelazem@gmail.com')
-SendEmailEntered.focus()
+if file_store !=[0,0," "," "," "]:
+    SendEmailEntered.insert(0, file_store[4])
+else :
+    SendEmailEntered.insert(0,'')
+
+
+
+
 
 #CheckBox Keep
 
-def inCheck2():
-    keep=Keep2.get()
-    if keep == 1:
-        SendEmailEntered = ttk.Entry(tab1,width=12,textvariable=SendEmail , state = 'disabled' )
-        SendEmailEntered.grid(column=0,row = 5 , columnspan=2, sticky="we")
-
-        
-    elif keep == 0:
-        SendEmailEntered = ttk.Entry(tab1,width=12,textvariable=SendEmail )
-        SendEmailEntered.grid(column=0,row = 5 , columnspan=2, sticky="we")
 
 
 
 Keep2 = tk.IntVar()
-Keep2check1 = tk.Checkbutton(tab1, text = "Keep" , variable = Keep2 , command= inCheck2)
+Keep2check1 = tk.Checkbutton(tab1, text = "Keep" , variable = Keep2 )
 Keep2check1.grid(column = 3, row = row, sticky = tk.W)
+if file_store[1] == '1':
+    Keep2check1.select()
 
 #Button Check
 
@@ -413,9 +410,23 @@ status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
 
+
+
 #Exit
 def protocolhandler():
-    if messagebox.askokcancel("Exit", "Wanna leave?"):
+    x=messagebox.askokcancel("Exit", "Wanna leave?")
+    if x == True:
+        if Keep1.get() == 1 and Keep2.get() == 1 :
+            write=['1','1',name.get(),password.get(),SendEmail.get()]
+        elif Keep1.get() == 0 and Keep2.get() == 1 :
+            write=['0','1','','',SendEmail.get()]
+        elif Keep1.get() == 1 and Keep2.get() == 0 :
+            write=['1','0',name.get(),password.get(),'']
+        elif Keep1.get() == 0 and Keep2.get() == 0 :
+            write=['0','0','','','']
+        print('write',write)
+        with open('data.pickle', 'wb') as f:
+            pickle.dump(write, f, pickle.HIGHEST_PROTOCOL)
         win.destroy()
 
 win.protocol("WM_DELETE_WINDOW", protocolhandler)
