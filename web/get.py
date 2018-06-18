@@ -56,19 +56,6 @@ class scrape:
         count = BeautifulSoup(requests.get(url).text, 'html.parser').findAll('li', {'filter-id': str(self.identifier)})[0]['count']
         return int(count)
 
-    def Check_Connection(self):
-        try:
-            r = requests.get("http://www.klwines.com/productfeed?&productTypeCD=10&minprice=&maxprice=&page=1").status_code
-            if r == 200:
-                r='Website Working'
-            else:
-                 r='Website Down'
-
-        except:
-            r='No Internet Connection'
-        return r
-
-
 
 
     def data(self):
@@ -177,7 +164,7 @@ class scrape:
         base = self.Excel_Compare()
         subject = 'Scraping Klwines Website '+str(self.identifier)+"-"+self.identifier_value
         if base == 0 :
-            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(self.Page_Count())+"\nStatus: Data Increament"
+            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(self.Page_Count())+"\nStatus: Data Decrement or Increment"
             html1="<h3 style='color: green;'>"+str(body.replace("\n","<br>"))+"</h3>"
         elif base ==1 :
             body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(self.Page_Count())+"\nStatus: Data Updated"
@@ -188,6 +175,37 @@ class scrape:
         return subject,body,html1
 
 
+
+    def internet (self):
+      REMOTE_SERVER = "www.google.com"
+      try:
+        # see if we can resolve the host name -- tells us if there is
+        # a DNS listening
+        host = socket.gethostbyname(REMOTE_SERVER)
+        # connect to the host -- tells us if the host is actually
+        # reachable
+        s = socket.create_connection((host, 80), 2)
+        return True
+      except:
+         pass
+      return False
+
+
+
+
+
+
+    def Check_Connection(self):
+        try:
+            r = requests.get("http://www.klwines.com/productfeed?&productTypeCD=10&minprice=&maxprice=&page=1").status_code
+            if r == 200:
+                r='Website Working'
+            else:
+                 r='Website Down'
+
+        except:
+            r='No Internet Connection'
+        return r
 
     def check_files_number(self):
         list1 = []
@@ -211,20 +229,6 @@ class scrape:
         return sorted(new)
 
 
-
-    def internet (self):
-      REMOTE_SERVER = "www.google.com"
-      try:
-        # see if we can resolve the host name -- tells us if there is
-        # a DNS listening
-        host = socket.gethostbyname(REMOTE_SERVER)
-        # connect to the host -- tells us if the host is actually
-        # reachable
-        s = socket.create_connection((host, 80), 2)
-        return True
-      except:
-         pass
-      return False
 
 
 
