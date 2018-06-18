@@ -4,14 +4,8 @@
 # @Author  : Aly Reda
 # @Site    : 
 # @File    : GUI.py
- 
-
-    #user               = 'samir.ahmed.abdelazem@gmail.com'
-    #password           ='123456789asd!@#'
-    #sendto             = 'samir.ahmed.abdelazem@gmail.com'
 
 import pickle
-
 from web.get import scrape as code
 from web.Gmail import get  as sendData 
 import re
@@ -332,16 +326,6 @@ def ClickAction3():
             #print(status_key)
             if status_key == True:
                 send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
-
-            #user               = 'samir.ahmed.abdelazem@gmail.com'
-            #password           ='123456789asd!@#'
-            #sendto             = 'samir.ahmed.abdelazem@gmail.com'
-            #user               = name.get()
-            #password1           = password.get()
-            #sendto             = SendEmail.get()
-
-        ##    try:    
-            #ahmed.email_send(user,password,sendto)
                 if chVarUn.get() == 0:
                     send.email_send()
                     status = Label(tab1, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
