@@ -41,13 +41,13 @@ win.resizable(False, False)
 
 file_store=[]  
 try:
-    with open('data.pickle', 'rb') as f:
+    with open('klwines.pickle', 'rb') as f:
         data = pickle.load(f)
     file_store=data
 except:
     file_store=['0','0','','','']
 
-print('file stored',file_store)
+#print('file stored',file_store)
 
 
 global Statusrow
@@ -322,55 +322,66 @@ def ClickAction3():
     scrape=code()
     internet_connection = scrape.internet() 
     if internet_connection == True :
-        scrape=code()
-        idf=wine_list[str(number.get())]
-        #print(scrape.check_files_number())
-        status_key = idf in scrape.check_files_number()
-        #print(status_key)
-        if status_key == True:
-            send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+        send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+        Gmail_Status=send.login_check()
+        if Gmail_Status == 'Login Successful':
+            scrape=code()
+            idf=wine_list[str(number.get())]
+            #print(scrape.check_files_number())
+            status_key = idf in scrape.check_files_number()
+            #print(status_key)
+            if status_key == True:
+                send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
 
-        #user               = 'samir.ahmed.abdelazem@gmail.com'
-        #password           ='123456789asd!@#'
-        #sendto             = 'samir.ahmed.abdelazem@gmail.com'
-        #user               = name.get()
-        #password1           = password.get()
-        #sendto             = SendEmail.get()
+            #user               = 'samir.ahmed.abdelazem@gmail.com'
+            #password           ='123456789asd!@#'
+            #sendto             = 'samir.ahmed.abdelazem@gmail.com'
+            #user               = name.get()
+            #password1           = password.get()
+            #sendto             = SendEmail.get()
 
-    ##    try:    
-        #ahmed.email_send(user,password,sendto)
-            if chVarUn.get() == 0:
-                send.email_send()
-                status = Label(tab1, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
+        ##    try:    
+            #ahmed.email_send(user,password,sendto)
+                if chVarUn.get() == 0:
+                    send.email_send()
+                    status = Label(tab1, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
+                    status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+                    x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+                    if x=='ok':
+                        status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+
+                elif chVarUn.get() == 1:
+                    send.email_send_two_attachments()
+                    status = Label(tab1, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
+                    status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+                    x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
+                    if x=='ok':
+                        status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+                        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+            ##    except:
+            ##        status = Label(tab1, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
+            ##        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
+            else:
+                status = Label(tab1, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-                x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+                x=messagebox.showinfo(message= 'Please Scrape First')
                 if x=='ok':
                     status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
-
-            elif chVarUn.get() == 1:
-                send.email_send_two_attachments()
-                status = Label(tab1, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
-                status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-                x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
-                if x=='ok':
-                    status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
-                    status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-
-        ##    except:
-        ##        status = Label(tab1, text="Enter Email & Password.",bd=1 , relief =SUNKEN , anchor=W )
-        ##        status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-
-        else:
-            status = Label(tab1, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
+        elif Gmail_Status == 'Login Failed':
+            status = Label(tab1, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
-            x=messagebox.showinfo(message= 'Please Scrape First')
+            x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
             if x=='ok':
                 status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
-
+        
     else:
         status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
@@ -409,7 +420,161 @@ check2.grid(column =  1, row = row, sticky=tk.N)
 status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
+#################################tab2############################################################
 
+
+
+row = 0
+# Frame 1
+
+
+#label Choose Category
+#ttk.Label(tab2,text = "Choose Category:").grid(column=0,row=row)
+
+#row+=1
+
+#Combobox
+#tab2_number = tk.StringVar()
+#tab2_numberChosen = ttk.Combobox(tab2,width=5,textvariable=tab2_number,state='readonly')
+#tab2_numberChosen['values']=('Beer','Distilled Spirits','Other','Sake','Soda','Wine - Dessert','Wine - Red','Wine - Rose','Wine - Sparkling','Wine - White')
+#tab2_numberChosen.grid(column = 0, row = row , columnspan=3, sticky="we")
+#tab2_numberChosen.current(1)
+
+xrn=[]
+#row +=1
+def tab2_ClickAction1():
+    l.insert(0, tab2_number.get())
+    xrn.append(tab2_number.get())
+def tab2_ClickAction2():
+    l.delete(ACTIVE)
+
+def tab2_ClickAction3():
+    l.delete(0,END)
+#tab2_action1 = ttk.Button(tab2,text = "Add" ,command=tab2_ClickAction1)
+#tab2_action1.grid(column = 0, row = row, sticky=tk.W)
+
+#tab2_action2 = ttk.Button(tab2,text = "Delete" ,command=tab2_ClickAction2)
+#tab2_action2.grid(column = 1, row = row, sticky=tk.W)
+
+#tab2_action3 = ttk.Button(tab2,text = "Delete All" ,command=tab2_ClickAction3)
+#tab2_action3.grid(column = 2, row = row, sticky=tk.W)
+#row+=1
+
+#lb1_values = tk.Variable()
+#l = Listbox(tab2 , listvariable= lb1_values)
+#l.grid(column =0, row =5, columnspan=2 , sticky=tk.W)
+#row+=1
+
+
+Excelcheck2 = tk.IntVar()
+Excelcheck2check2 = tk.Checkbutton(tab2, text = 'Excel', variable = Excelcheck2, state = 'disabled')
+Excelcheck2check2.select()
+Excelcheck2check2.grid(column =  1, row = row, sticky=tk.W)
+
+
+Distilled = tk.IntVar()
+Distilledcheck = tk.Checkbutton(tab2, text = 'Distilled Spirits', variable = Distilled , state = 'disabled')
+Distilledcheck.select()
+Distilledcheck.grid(column =  0, row = row, sticky=tk.W)
+
+row+=1
+Jsoncheck2 = tk.IntVar()
+Jsoncheck2check2 = tk.Checkbutton(tab2, text = 'Json', variable = Jsoncheck2)
+Jsoncheck2check2.deselect()
+Jsoncheck2check2.grid(column =  1, row = row, sticky=tk.W)
+
+allcheck = tk.IntVar()
+allcheckcheck2 = tk.Checkbutton(tab2, text = 'ALL', variable = allcheck)
+allcheckcheck2.deselect()
+allcheckcheck2.grid(column =  0, row = row, sticky=tk.W)
+
+
+
+
+
+
+
+scrapechecl = tk.IntVar()
+scrapecheclcheck2 = tk.Checkbutton(tab2, text = 'Scrape', variable = scrapechecl, state = 'disabled')
+scrapecheclcheck2.select()
+scrapecheclcheck2.grid(column = 3, row = 0, sticky=tk.W)
+
+
+scrapechecEmail = tk.IntVar()
+scrapechecEmailcheck2 = tk.Checkbutton(tab2, text = 'Scrape & Email', variable = scrapechecEmail)
+scrapechecEmailcheck2.select()
+scrapechecEmailcheck2.grid(column =  3, row = 1, sticky=tk.W)
+
+
+
+
+aLabel2 = ttk.Label(tab2 , text = 'Days:')
+aLabel2.grid(column = 0, row = 2 , sticky="we")
+password5 = tk.StringVar()
+passwordEntered5 = ttk.Entry(tab2, show="*",width=12,textvariable=password5)
+passwordEntered5.grid(column=1,row = 2 , sticky="we")
+
+aLabel2 = ttk.Label(tab2 , text = 'Time:')
+aLabel2.grid(column = 0, row = 3 , sticky="we")
+password3 = tk.StringVar()
+passwordEntered3 = ttk.Entry(tab2, show="*",width=12,textvariable=password3)
+passwordEntered3.grid(column=1,row = 3 , sticky="we")
+
+
+aLabel24 = ttk.Label(tab2 , text = 'Every:')
+aLabel24.grid(column = 0, row = 4 , sticky="we")
+passwordl24 = tk.StringVar()
+passwordEntered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl24)
+passwordEntered34.grid(column=1,row = 4 , sticky="we")
+
+aLabel245 = ttk.Label(tab2 , text = 'start:')
+aLabel245.grid(column = 0, row = 5 , sticky="we")
+passwordl245 = tk.StringVar()
+passwordl245Entered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl245)
+passwordl245Entered34.grid(column=1,row = 5 , sticky="we")
+
+#################################################################################################
+#################################tab3#########################################################
+
+
+
+
+
+#lb1_values2 = tk.Variable()
+#l2 = Listbox(tab3 , listvariable= lb1_values2 , state = 'disabled')
+#l2.grid(column = 0, row =3, columnspan=10 , sticky=tk.W)
+
+
+#Frame Status
+#status3 = Label(tab3, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
+#status3.insert(1.0, 'message sent')
+#status3.grid(row=Statusrow, column=0,rowspan=10 , columnspan=Statuscolumnspan, sticky="we")
+
+
+
+
+
+##tex = Text(master=tab3 )
+##scr=Scrollbar(tab3, orient=VERTICAL, command=tex.yview)
+##scr.grid(row=0, column=0, rowspan=15, columnspan=1, sticky=NS)
+##tex.grid(row=0, column=0, rowspan=10, columnspan=1, sticky=W , state = 'disabled')
+##tex.config(yscrollcommand=scr.set, font=('Arial', 8, 'bold', 'italic'))
+
+#tex = Text(master=tab3)
+#scr=Scrollbar(tab3, orient=VERTICAL, command=tex.yview)
+#scr.grid(row=2, column=2, rowspan=15, columnspan=1, sticky=NS)
+#tex.grid(row=2, column=1, sticky=W)
+#tex.config(yscrollcommand=scr.set, font=('Arial', 8, 'bold', 'italic'))
+
+
+
+
+
+
+
+
+
+#################################################################################################
 
 
 #Exit
@@ -424,8 +589,8 @@ def protocolhandler():
             write=['1','0',name.get(),password.get(),'']
         elif Keep1.get() == 0 and Keep2.get() == 0 :
             write=['0','0','','','']
-        print('write',write)
-        with open('data.pickle', 'wb') as f:
+        #print('write',write)
+        with open('klwines.pickle', 'wb') as f:
             pickle.dump(write, f, pickle.HIGHEST_PROTOCOL)
         win.destroy()
 
