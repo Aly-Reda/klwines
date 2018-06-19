@@ -7,7 +7,9 @@
 
 import pickle
 from web.get import scrape as code
-from web.Gmail import get  as sendData 
+from web.send import get  as sendData
+from web.check import valid  as check
+from web.files import give as file
 from tkinter import *  
 import tkinter as tk
 from tkinter import ttk
@@ -16,6 +18,8 @@ import logging
 import tkinter
 import threading
 import tkinter.scrolledtext as ScrolledText
+import os
+
 class TextHandler(logging.Handler):
     """This class allows you to log to a Tkinter Text or ScrolledText widget"""
     def __init__(self, text):
@@ -38,7 +42,7 @@ class TextHandler(logging.Handler):
 win = tk.Tk()
 win.title("Klwines Scraping")
 win.iconbitmap(r'klwines.ico')
-win.geometry('330x240')
+win.geometry('350x240')
 win.resizable(False, False)
 #import re
 
@@ -73,7 +77,6 @@ Statuscolumnspan =12
 ButtonCol=10
 
 wine_list={'Beer':7 ,'Distilled Spirits':10 ,'Other':0 ,'Sake':23 ,'Soda':15 ,'Wine - Dessert':5 ,'Wine - Red':1 ,'Wine - Rose':3 ,'Wine - Sparkling':4 ,'Wine - White':2}
-import os
 
 
 
@@ -158,8 +161,9 @@ numberChosen.current(1)
 def ClickAction():
     logger.warn("--> Scrape Button Clicked")
     scrape=code()
-    internet_connection = scrape.internet() 
-    website_status= scrape.Check_Connection()
+    valid=check()
+    internet_connection = valid.Internet_Connection() 
+    website_status= valid.Website_Connection()
     status = Label(tab1, text=website_status,bd=1 , relief =SUNKEN , anchor=W )
     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
     if internet_connection == True:
@@ -265,11 +269,12 @@ if file_store[0] == '1':
 #Button Check
 def ClickAction2():
     logger.warn("--> Connect Button Clicked")
-
     send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
+    valid=check(name.get() , password.get())
     scrape=code()
-    internet_connection = scrape.internet() 
-    Gmail_Status=send.login_check()
+    internet_connection = valid.Internet_Connection() 
+    Gmail_Status=valid.Gmail_Login()
+
     if internet_connection == True:
         if Gmail_Status == 'Login Successful':
             logger.warn("--> Gmail Login Successful")
@@ -350,22 +355,23 @@ if file_store[1] == '1':
 
 def ClickAction3():
     logger.warn("--> Email Button Clicked")
-
     scrape=code()
-    internet_connection = scrape.internet() 
+    
+    valid=check(name.get() , password.get())
+    internet_connection = valid.Internet_Connection()
+    #print(internet_connection)
     if internet_connection == True :
         send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
-        Gmail_Status=send.login_check()
+        Gmail_Status=valid.Gmail_Login()
+        #print(Gmail_Status)
         if Gmail_Status == 'Login Successful':
             logger.warn("--> Gmail Login Successful")
-
             scrape=code()
             idf=wine_list[str(number.get())]
             #print(scrape.check_files_number())
-            status_key = idf in scrape.check_files_number()
+            status_key = idf in valid.Files_Found()
             #print(status_key)
             if status_key == True:
-
                 send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
                 if chVarUn.get() == 0:
                     send.email_send()
@@ -422,7 +428,6 @@ def ClickAction3():
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
         logger.warn("--> No Internet Connection")
-
         if x=='ok':
             status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
