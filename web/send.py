@@ -6,6 +6,7 @@ from email import encoders
 
 from web.get import scrape as code
 from web.files import give as file
+from web.compare import base
 
 class get:
     
@@ -19,9 +20,10 @@ class get:
 
 
     def email_send(self):
-        get_file=file(self.identifier)
+        get_file=file()
         filename , excel_name = get_file.latest_one_file()
-        subject,body,html1  = get_file.base_email()
+        Base=base(self.identifier)
+        subject,body,html1  = Base.base_email()
         msg = MIMEMultipart()
         msg['From'] = self.User_Email
         msg['To'] = self.Send_To
@@ -44,14 +46,14 @@ class get:
 
     def email_send_two_attachments(self):
         convert=code(self.identifier)
-        get_file=file(self.identifier)
-
+        get_file=file()
+        Base=base(self.identifier)
         try:
             filename1,filename2 , excel_name,jason_name=get_file.latest_two_files()
         except:
             convert.json()
             filename1,filename2 , excel_name,jason_name=get_file.latest_two_files()
-        subject,body,html1  =get_file.base_email()
+        subject,body,html1  = Base.base_email()
         msg = MIMEMultipart()
         msg['From'] = self.User_Email
         msg['To'] = self.Send_To

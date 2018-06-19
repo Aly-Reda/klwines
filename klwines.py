@@ -19,6 +19,7 @@ import tkinter
 import threading
 import tkinter.scrolledtext as ScrolledText
 import os
+from web.compare import base
 
 class TextHandler(logging.Handler):
     """This class allows you to log to a Tkinter Text or ScrolledText widget"""
@@ -271,9 +272,11 @@ def ClickAction2():
     logger.warn("--> Connect Button Clicked")
     send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
     valid=check(name.get() , password.get())
-    scrape=code()
+    #scrape=code()
     internet_connection = valid.Internet_Connection() 
     Gmail_Status=valid.Gmail_Login()
+    #print('internet_connection',internet_connection)
+    #print('Gmail_Status',Gmail_Status)
 
     if internet_connection == True:
         if Gmail_Status == 'Login Successful':

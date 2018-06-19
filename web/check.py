@@ -3,10 +3,6 @@ import os
 import glob
 import socket
 import smtplib
-#scrape.internet()
-#scrape.Check_Connection()
-#send.login_check()
-#scrape.check_files_number()
 
 class valid:
     
