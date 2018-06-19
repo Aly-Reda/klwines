@@ -17,30 +17,28 @@ class scrape:
 
     def row(self , Page):
         url="http://www.klwines.com/productfeed?&productTypeCD="+str(self.identifier)+"&minprice=&maxprice=&page="+str(Page)
-        row_block = BeautifulSoup(requests.get(url).text, 'html.parser').findAll('tr')
-        return row_block
+        row_blocks = BeautifulSoup(requests.get(url).text, 'html.parser').findAll('tr')
+        return row_blocks
 
 
     #Scrape Text & href
-    def col(self ,x , number , status):
+    def col(self ,row_one_block , col_number , status):
         if status == 'txt':
             try:
-                y=x.findAll('td')[int(number)].getText().strip(" \n\t\r")
-                #print(y)
-                return y
-
+                col_text=row_one_block.findAll('td')[int(col_number)].getText().strip(" \n\t\r")
+                return col_text
             except:
-                y=""
-                return y
+                col_text=""
+                return col_text
         elif status == 'href':
             try:
-                t=x.findAll('td')[int(number)]
+                t=row_one_block.findAll('td')[int(col_number)]
                 t2=t.findAll('a')[0]['href']
-                y="https://www.klwines.com"+str(t2)
-                return y
+                col_href="https://www.klwines.com"+str(t2)
+                return col_href
             except:
-                y=""
-                return y
+                col_href=""
+                return col_href
 
 
     #Scrape Number of items

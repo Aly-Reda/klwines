@@ -43,7 +43,7 @@ class TextHandler(logging.Handler):
 win = tk.Tk()
 win.title("Klwines Scraping")
 win.iconbitmap(r'klwines.ico')
-win.geometry('350x240')
+win.geometry('330x240')
 win.resizable(False, False)
 #import re
 

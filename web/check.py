@@ -37,7 +37,7 @@ class valid:
                  r='Website Down'
 
         except:
-            r='No Internet Connection'
+            r='Website Down'
         return r
 
     def Gmail_Login(self):

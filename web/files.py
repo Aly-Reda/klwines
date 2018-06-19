@@ -1,12 +1,5 @@
-import datetime
-import requests
-from bs4 import BeautifulSoup
-from openpyxl import Workbook
-import pandas as pd
 import os
 import glob
-import socket
-from web.get import scrape as code
 
 class give:
     def __init__(self) :
@@ -28,10 +21,10 @@ class give:
         Excel = sorted(glob.iglob(files_path1), key=os.path.getctime, reverse=True)
         json  = sorted(glob.iglob(files_path2), key=os.path.getctime, reverse=True)
         Excel_Path = "files\\"+Excel[0].split('\\')[-1]
-        Excel1=Excel[0].split('\\')[-1]
+        Excel_name=Excel[0].split('\\')[-1]
         Json_Path  = "files\\"+json[0].split('\\')[-1]
-        Json1=json[0].split('\\')[-1]
-        return  Excel_Path, Json_Path ,Excel1 ,Json1
+        Json_name=json[0].split('\\')[-1]
+        return  Excel_Path, Json_Path ,Excel_name ,Json_name
 
 
 

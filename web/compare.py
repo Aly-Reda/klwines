@@ -1,11 +1,6 @@
-import datetime
-import requests
-from bs4 import BeautifulSoup
-from openpyxl import Workbook
 import pandas as pd
 import os
 import glob
-import socket
 from web.get import scrape as code
 
 class base:
@@ -23,17 +18,21 @@ class base:
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
         New_Excel = "files\\"+files[0].split('\\')[-1]
         #if it is the first time the New_Excel and Old_Excel are the same
+        
         try:
             Old_Excel = "files\\"+files[1].split('\\')[-1]
         except:
-            Old_Excel = "files\\"+files[0].split('\\')[-1]
+            #base ==
+            Old_Excel = New_Excel
         #Excel_name =files[0].split('\\')[-1]
         #print('Latest Excel Created File Path Send')
         return Old_Excel , New_Excel
 
 
 
-
+    #base = 0 Data Decrement or Increment
+    #base = 1 Data updated
+    #base = 2 Same data
     def Excel_Compare(self):
         file1,file2= self.latest_two_Excel()
         dataFrame1 = pd.read_excel(str(file1))
@@ -55,7 +54,7 @@ class base:
         return flage
 
 #identifierf
-    def base_email(self ):
+    def base_email(self):
         base = self.Excel_Compare()
         scrape=code(self.identifier)
         Page_Count_Number=scrape.Page_Count()
