@@ -551,28 +551,41 @@ scrapechecEmailcheck2.grid(column =  3, row = 1, sticky=tk.W)
 
 aLabel2 = ttk.Label(tab2 , text = 'Days:')
 aLabel2.grid(column = 0, row = 2 , sticky="we")
-password5 = tk.StringVar()
-passwordEntered5 = ttk.Entry(tab2, show="*",width=12,textvariable=password5)
-passwordEntered5.grid(column=1,row = 2 , sticky="we")
+#spinf=tk.IntVar()
+spin = Spinbox(tab2, from_=0, to=7, width=5 ) 
+spin.grid(column=1,row = 2 , sticky="we")
+
+#password5 = tk.IntVar()
+#passwordEntered5 = ttk.Entry(tab2, show="*",width=12,textvariable=password5)
+#passwordEntered5.grid(column=1,row = 2 , sticky="we")
 
 aLabel2 = ttk.Label(tab2 , text = 'Time:')
 aLabel2.grid(column = 0, row = 3 , sticky="we")
-password3 = tk.StringVar()
-passwordEntered3 = ttk.Entry(tab2, show="*",width=12,textvariable=password3)
-passwordEntered3.grid(column=1,row = 3 , sticky="we")
+#password3 = tk.StringVar()
+#passwordEntered3 = ttk.Entry(tab2, show="*",width=12,textvariable=password3)
+#passwordEntered3.grid()
+spin2 = Spinbox(tab2, from_=0 , to=30 , width=5 ) 
+spin2.grid(column=1,row = 3 , sticky="we")
 
 
 aLabel24 = ttk.Label(tab2 , text = 'Every:')
 aLabel24.grid(column = 0, row = 4 , sticky="we")
-passwordl24 = tk.StringVar()
-passwordEntered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl24)
-passwordEntered34.grid(column=1,row = 4 , sticky="we")
+#passwordl24 = tk.StringVar()
+#passwordEntered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl24)
+#passwordEntered34.grid(column=1,row = 4 , sticky="we")
 
-aLabel245 = ttk.Label(tab2 , text = 'start:')
+spin3 = Spinbox(tab2, from_=15 , to=60 , width=5 ) 
+spin3.grid(column=1,row = 4 , sticky="we")
+
+
+
+aLabel245 = ttk.Label(tab2 , text = 'Start:')
 aLabel245.grid(column = 0, row = 5 , sticky="we")
-passwordl245 = tk.StringVar()
-passwordl245Entered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl245)
-passwordl245Entered34.grid(column=1,row = 5 , sticky="we")
+#passwordl245 = tk.StringVar()
+#passwordl245Entered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl245)
+#passwordl245Entered34.grid(column=1,row = 5 , sticky="we")
+spin4 = Spinbox(tab2, from_=0 , to=24 , width=5 ) 
+spin4.grid(column=1,row = 5  , sticky="we")
 
 
 
@@ -660,7 +673,44 @@ if __name__ == '__main__':
 
 #################################################################################################
 
+#############################tab 4 #################################################
 
+
+
+#from PIL import ImageTk, Image
+#import os
+
+#img = ImageTk.PhotoImage(Image.open("drunken.png"))
+#panel = Label(tab4, image = img)
+#panel.pack(side = "bottom", fill = "both", expand = "yes")
+
+textdesc='''KLWines Scraper V 1.2
+
+Features 
+Scraper Tool to help Drunken Diplomacy
+Scrape Data from Klwines website
+according to Product Type of Klwines
+Compare between Scraped Data
+And Send Email with Data Status, Excel
+or convert Excel to json and Send both
+Copyright © 2018
+All Rights Reserved
+'''
+#canvas = Canvas(tab4, width=100, height=100, bd=0, highlightthickness=0)
+#canvas.create_text(200, 250, text=textdesc)
+#canvas.pack()
+#tk.update()
+
+aLabel2334 = ttk.Label(tab4 , text = textdesc , justify='center')
+aLabel2334.grid(column = 2, row = 0 , sticky="we" ,padx=45)
+
+
+
+
+
+
+
+#################################################################################
 #Exit
 def protocolhandler():
     x=messagebox.askokcancel("Exit", "Wanna leave?")
