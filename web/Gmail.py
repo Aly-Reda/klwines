@@ -1,17 +1,9 @@
-import datetime
-import requests
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
-from bs4 import BeautifulSoup
-from openpyxl import Workbook
-import pandas as pd
-import xlrd
-import codecs
-import os
-import sqlite3
+
 from web.get import scrape as code
 class get:
     
@@ -157,4 +149,12 @@ class get:
 ##
 
 
-
+#import datetime
+#import requests
+#from bs4 import BeautifulSoup
+#from openpyxl import Workbook
+#import pandas as pd
+#import xlrd
+#import codecs
+#import os
+#import sqlite3

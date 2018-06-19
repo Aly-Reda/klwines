@@ -8,18 +8,39 @@
 import pickle
 from web.get import scrape as code
 from web.Gmail import get  as sendData 
-import re
-
 from tkinter import *  
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import logging
+import tkinter
+import threading
+import tkinter.scrolledtext as ScrolledText
+class TextHandler(logging.Handler):
+    """This class allows you to log to a Tkinter Text or ScrolledText widget"""
+    def __init__(self, text):
+        # run the regular Handler __init__
+        logging.Handler.__init__(self)
+        # Store a reference to the Text it will log to
+        self.text = text
+
+    def emit(self, record):
+        msg = self.format(record)
+        def append():
+            self.text.configure(state='normal')
+            self.text.insert(tkinter.END, msg + '\n')
+            self.text.configure(state='disabled')
+            # Autoscroll to the bottom
+            self.text.yview(tkinter.END)
+        # This is necessary because we can't modify the Text from other threads
+        self.text.after(0, append)
 
 win = tk.Tk()
 win.title("Klwines Scraping")
 win.iconbitmap(r'klwines.ico')
-#win.geometry('350x240')
+win.geometry('330x240')
 win.resizable(False, False)
+#import re
 
 #center
 # Gets the requested values of the height and widht.
@@ -122,7 +143,7 @@ row = 0
 
 
 #label Choose Category
-ttk.Label(tab1,text = "Choose Category:").grid(column=0,row=row)
+ttk.Label(tab1,text = "Choose Category:").grid(column=0,row=row , sticky=N+S+E+W)
 
 row+=1
 
@@ -130,11 +151,12 @@ row+=1
 number = tk.StringVar()
 numberChosen = ttk.Combobox(tab1,width=12,textvariable=number,state='readonly')
 numberChosen['values']=('Beer','Distilled Spirits','Other','Sake','Soda','Wine - Dessert','Wine - Red','Wine - Rose','Wine - Sparkling','Wine - White')
-numberChosen.grid(column = 0, row = row , columnspan=8, sticky="we")
+numberChosen.grid(column = 0, row = row , columnspan=8,sticky=N+S+E+W)
 numberChosen.current(1)
 
 #Button Scrape
 def ClickAction():
+    logger.warn("--> Scrape Button Clicked")
     scrape=code()
     internet_connection = scrape.internet() 
     website_status= scrape.Check_Connection()
@@ -148,6 +170,7 @@ def ClickAction():
             scrape=code(idf)
             scrape.data()
             status = Label(tab1, text="Scraping "+str(idf)+"-"+ number.get()+" Done" ,bd=1 , relief =SUNKEN , anchor=W )
+            logger.warn("--> Scraping "+str(idf)+"-"+ number.get()+" Done")
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message= "Scraping "+str(idf)+"-"+ number.get()+" Done" )
             if x=='ok':
@@ -156,10 +179,13 @@ def ClickAction():
             
             if chVarUn.get() == 1:
                 scrape.json()
+                logger.warn("--> Excel file Convert into Json")
         else:
             status = Label(tab1, text="Please wait until the website back" ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message= "Please wait until the website back" )
+            logger.warn("--> Website Off")
+
             if x=='ok':
                 status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
@@ -167,12 +193,14 @@ def ClickAction():
         status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
+        logger.warn("--> No Internet Connection")
+
         if x=='ok':
             status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
  
 
-action = ttk.Button(tab1,text = "Scrape" ,command=ClickAction).grid(column = ButtonCol, row = row)
+action = ttk.Button(tab1,text = "Scrape" ,command=ClickAction).grid(column = ButtonCol, row = row,sticky=N+S+E+W)
 
 
 # Frame 2
@@ -236,12 +264,16 @@ if file_store[0] == '1':
 
 #Button Check
 def ClickAction2():
+    logger.warn("--> Connect Button Clicked")
+
     send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
     scrape=code()
     internet_connection = scrape.internet() 
     Gmail_Status=send.login_check()
     if internet_connection == True:
         if Gmail_Status == 'Login Successful':
+            logger.warn("--> Gmail Login Successful")
+
             status = Label(tab1, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showinfo(message=  Gmail_Status )
@@ -251,6 +283,8 @@ def ClickAction2():
 
                 
         elif Gmail_Status == 'Login Failed':
+            logger.warn("--> Gmail Login Failed")
+
             status = Label(tab1, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
@@ -259,6 +293,8 @@ def ClickAction2():
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
     else:
         status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
+        logger.warn("--> No Internet Connection")
+
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
         if x=='ok':
@@ -313,24 +349,32 @@ if file_store[1] == '1':
 
 
 def ClickAction3():
+    logger.warn("--> Email Button Clicked")
+
     scrape=code()
     internet_connection = scrape.internet() 
     if internet_connection == True :
         send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
         Gmail_Status=send.login_check()
         if Gmail_Status == 'Login Successful':
+            logger.warn("--> Gmail Login Successful")
+
             scrape=code()
             idf=wine_list[str(number.get())]
             #print(scrape.check_files_number())
             status_key = idf in scrape.check_files_number()
             #print(status_key)
             if status_key == True:
+
                 send=sendData( name.get() , password.get() , SendEmail.get() , number.get())
                 if chVarUn.get() == 0:
                     send.email_send()
                     status = Label(tab1, text="Email Send with Excel.",bd=1 , relief =SUNKEN , anchor=W )
                     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
+
                     x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+                    logger.warn("--> Email Send with "+str(idf)+"-"+str(number.get())+" Excel File.")
+
                     if x=='ok':
                         status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
@@ -341,6 +385,8 @@ def ClickAction3():
                     status = Label(tab1, text="Email Send with Excel & json.",bd=1 , relief =SUNKEN , anchor=W )
                     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
                     x=messagebox.showinfo(message= "Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
+                    logger.warn("--> Email Send with "+str(idf)+"-"+str(number.get())+" Excel & json Files.")
+
                     if x=='ok':
                         status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
@@ -353,11 +399,15 @@ def ClickAction3():
                 status = Label(tab1, text="Please Scrape First.",bd=1 , relief =SUNKEN , anchor=W )
                 status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
                 x=messagebox.showinfo(message= 'Please Scrape First')
+                logger.warn("--> File "+str(idf)+"-"+str(number.get())+" Not Scraped.")
+
                 if x=='ok':
                     status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
                     status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
 
         elif Gmail_Status == 'Login Failed':
+            logger.warn("--> Login Failed")
+
             status = Label(tab1, text=Gmail_Status ,bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
             x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
@@ -368,8 +418,11 @@ def ClickAction3():
         
     else:
         status = Label(tab1, text="Please check the internet connection" ,bd=1 , relief =SUNKEN , anchor=W )
+        
         status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
         x=messagebox.showinfo(message= "Please check the internet connection" )
+        logger.warn("--> No Internet Connection")
+
         if x=='ok':
             status = Label(tab1, text="Ready...    ",bd=1 , relief =SUNKEN , anchor=W )
             status.grid(row=Statusrow, column=0, columnspan=Statuscolumnspan, sticky="we")
@@ -434,6 +487,10 @@ def tab2_ClickAction2():
 
 def tab2_ClickAction3():
     l.delete(0,END)
+
+#def tab2_ClickAction1():
+ #   l.insert(0, tab2_number.get())
+  #  xrn.append(tab2_number.get())
 #tab2_action1 = ttk.Button(tab2,text = "Add" ,command=tab2_ClickAction1)
 #tab2_action1.grid(column = 0, row = row, sticky=tk.W)
 
@@ -517,10 +574,53 @@ passwordl245 = tk.StringVar()
 passwordl245Entered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl245)
 passwordl245Entered34.grid(column=1,row = 5 , sticky="we")
 
+
+
+def tab2_action_auto_click():
+    pass
+tab2_action_auto = ttk.Button(tab2,text = "Auto" ,command=tab2_action_auto_click)
+tab2_action_auto.grid(column = 3, row = 5,columnspan=3,rowspan=2 , sticky=tk.S)
+
+
+
+
+
+
+
+
+
+
+
+
 #################################################################################################
 #################################tab3#########################################################
 
 
+
+# Sample usage
+if __name__ == '__main__':
+    # Create the GUI
+    #root = tkinter.Tk()
+    
+
+    st = ScrolledText.ScrolledText(tab3, state='disabled')
+    st.configure(font='TkFixedFont')
+    st.pack()
+
+    # Create textLogger
+    text_handler = TextHandler(st)
+
+    # Add the handler to logger
+    logger = logging.getLogger()
+    logger.addHandler(text_handler)
+
+    # Log some messages
+    #logger.debug('debug message')
+    #logger.info('info message')
+    #logger.warn('hi')
+    #logger.error('error message')
+    #logger.critical('critical message')
+    #logger.warn('hi')
 
 
 

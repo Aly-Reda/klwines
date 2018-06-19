@@ -1,17 +1,10 @@
 import datetime
 import requests
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 import pandas as pd
-import xlrd
-import codecs
 import os
 import glob
-import time
 import socket
 
 class scrape:
@@ -235,6 +228,12 @@ class scrape:
 
 
 
-
+#from email.mime.text import MIMEText
+#from email.mime.multipart import MIMEMultipart
+#from email.mime.base import MIMEBase
+#from email import encoders
+#import xlrd
+#import codecs
+#import time
 
 
