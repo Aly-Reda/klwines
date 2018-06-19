@@ -12,46 +12,62 @@ class base:
 
 #identifierfirer
     def latest_two_Excel(self):
+        one_file=''
         cwd = os.getcwd()
         folder=cwd.replace('\\','\\\\')+r'\\files'+r'\\'
         files_path = os.path.join(folder, str(self.identifier)+"-"+self.identifier_value+'*.xlsx')
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
         New_Excel = "files\\"+files[0].split('\\')[-1]
         #if it is the first time the New_Excel and Old_Excel are the same
-        
         try:
             Old_Excel = "files\\"+files[1].split('\\')[-1]
+
         except:
             #base ==
             Old_Excel = New_Excel
+            one_file='file'
         #Excel_name =files[0].split('\\')[-1]
         #print('Latest Excel Created File Path Send')
-        return Old_Excel , New_Excel
+        return Old_Excel , New_Excel , one_file
 
 
 
-    #base = 0 Data Decrement or Increment
-    #base = 1 Data updated
-    #base = 2 Same data
     def Excel_Compare(self):
-        file1,file2= self.latest_two_Excel()
+        file1,file2 , one_file= self.latest_two_Excel()
+        if one_file == 'file':
+            flage =4
+            return flage
         dataFrame1 = pd.read_excel(str(file1))
         data1=len(dataFrame1.iloc[:,0]) 
         dataFrame2 = pd.read_excel(str(file2))
         data2=len(dataFrame2.iloc[:,0])
-        if data1 == data2:
+        print(data1)
+        if data1 == data2:       
             df1 = pd.read_excel(str(file1))
             df2 = pd.read_excel(str(file2))
             difference = df1[df1!=df2]    
             xnr = difference.notnull().values.any()
             if xnr == False:
-                flage=2
+                flage=0
+                return flage
+
             else:
                 flage=1
-        else:
-            flage=0
+                return flage
 
-        return flage
+        elif data1 < data2:
+            flage=2
+            return flage
+
+        elif data1 > data2:
+            flage=3
+            return flage
+
+# 0 Same Data
+# 1 Data Updated
+# 2 Increment 
+# 3 decrement
+# 4 first time
 
 #identifierf
     def base_email(self):
@@ -60,14 +76,21 @@ class base:
         Page_Count_Number=scrape.Page_Count()
         subject = 'Scraping Klwines Website '+str(self.identifier)+"-"+self.identifier_value
         if base == 0 :
-            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: Data Decrement or Increment"
-            html1="<h3 style='color: green;'>"+str(body.replace("\n","<br>"))+"</h3>"
+            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: Same Data"
+            html1="<h3 style='color: black;'>"+str(body.replace("\n","<br>"))+"</h3>"
         elif base ==1 :
             body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: Data Updated"
             html1="<h3 style='color: blue;'>"+str(body.replace("\n","<br>"))+"</h3>"
         elif base ==2 :
-            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: Same Data"
-            html1="<h3 style='color: black;'>"+str(body.replace("\n","<br>"))+"</h3>"
+            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: Data Increment"
+            html1="<h3 style='color: green;'>"+str(body.replace("\n","<br>"))+"</h3>"
+        elif base ==3 :
+            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: Data Decrement"
+            html1="<h3 style='color: red;'>"+str(body.replace("\n","<br>"))+"</h3>"
+        elif base ==4 :
+            body = str(self.identifier)+"-"+self.identifier_value+' count: '+str(Page_Count_Number)+"\nStatus: No Comparison First Time Scraping"
+            html1="<h3 style='color: orange;'>"+str(body.replace("\n","<br>"))+"</h3>"
+
         return subject,body,html1
 
 
