@@ -4,9 +4,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-from web.get import scrape as code
-from web.files import give as file
-from web.compare import base
+from Code.get import scrape as code
+from Code.files import give as file
+from Code.compare import base
 
 class get:
     
@@ -46,13 +46,13 @@ class get:
 
     def email_send_two_attachments(self):
         convert=code(self.identifier)
-        get_file=file()
+        get_file2=file()
         Base=base(self.identifier)
         try:
-            filename1,filename2 , excel_name,jason_name=get_file.latest_two_files()
+            filename1,filename2 , excel_name,jason_name=get_file2.latest_two_files()
         except:
             convert.json()
-            filename1,filename2 , excel_name,jason_name=get_file.latest_two_files()
+            filename1,filename2 , excel_name,jason_name=get_file2.latest_two_files()
         subject,body,html1  = Base.base_email()
         msg = MIMEMultipart()
         msg['From'] = self.User_Email

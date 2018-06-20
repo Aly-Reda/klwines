@@ -6,10 +6,12 @@
 # @File    : GUI.py
 
 import pickle
-from web.get import scrape as code
-from web.send import get  as sendData
-from web.check import valid  as check
-from web.files import give as file
+from Code.get import scrape as code
+from Code.send import get  as sendData
+from Code.check import valid  as check
+from Code.compare import base
+from Code.schedule import Schedule
+from Code.files import give as file
 from tkinter import *  
 import tkinter as tk
 from tkinter import ttk
@@ -19,8 +21,6 @@ import tkinter
 import threading
 import tkinter.scrolledtext as ScrolledText
 import os
-from web.compare import base
-from web.schedule import Schedule
 
 class TextHandler(logging.Handler):
     """This class allows you to log to a Tkinter Text or ScrolledText widget"""
@@ -735,7 +735,7 @@ if __name__ == '__main__':
 #panel = Label(tab4, image = img)
 #panel.pack(side = "bottom", fill = "both", expand = "yes")
 
-textdesc='''KLWines Scraper V 1.2
+textdesc='''KLWines Scraper V 1.6
 
 Features 
 Scraper Tool to help Drunken Diplomacy

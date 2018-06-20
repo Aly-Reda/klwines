@@ -59,7 +59,7 @@ class valid:
         list1 = []
         new=[]
         cwd = os.getcwd()
-        folder=cwd.replace('\\','\\\\')+r'\\files'+r'\\'
+        folder=cwd.replace('\\','\\\\')+r'\\Files'+r'\\'
         files_path = os.path.join(folder,'*.xlsx')
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
         if len(files[:]) > 0:

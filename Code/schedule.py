@@ -1,7 +1,7 @@
 import schedule
 import time
-from web.get import scrape as code
-from web.send import get as Send_File
+from Code.get import scrape as code
+from Code.send import get as Send_File
 
 class Schedule:
     

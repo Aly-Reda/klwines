@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import glob
-from web.get import scrape as code
+from Code.get import scrape as code
 
 class base:
     def __init__(self, identifier =10 ) :
@@ -14,18 +14,18 @@ class base:
     def latest_two_Excel(self):
         one_file=''
         cwd = os.getcwd()
-        folder=cwd.replace('\\','\\\\')+r'\\files'+r'\\'
+        folder=cwd.replace('\\','\\\\')+r'\\Files'+r'\\'
         files_path = os.path.join(folder, str(self.identifier)+"-"+self.identifier_value+'*.xlsx')
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
-        New_Excel = "files\\"+files[0].split('\\')[-1]
+        New_Excel = "Files\\"+files[0].split('\\')[-1]
         #if it is the first time the New_Excel and Old_Excel are the same
         try:
-            Old_Excel = "files\\"+files[1].split('\\')[-1]
+            Old_Excel = "Files\\"+files[1].split('\\')[-1]
 
         except:
             #base ==
             Old_Excel = New_Excel
-            one_file='file'
+            one_file='flage'
         #Excel_name =files[0].split('\\')[-1]
         #print('Latest Excel Created File Path Send')
         return Old_Excel , New_Excel , one_file
@@ -34,7 +34,7 @@ class base:
 
     def Excel_Compare(self):
         file1,file2 , one_file= self.latest_two_Excel()
-        if one_file == 'file':
+        if one_file == 'flage':
             flage =4
             return flage
         dataFrame1 = pd.read_excel(str(file1))
