@@ -20,6 +20,7 @@ import threading
 import tkinter.scrolledtext as ScrolledText
 import os
 from web.compare import base
+from web.schedule import Schedule
 
 class TextHandler(logging.Handler):
     """This class allows you to log to a Tkinter Text or ScrolledText widget"""
@@ -527,15 +528,15 @@ Distilledcheck.select()
 Distilledcheck.grid(column =  0, row = row, sticky=tk.W)
 
 row+=1
-Jsoncheck2 = tk.IntVar()
-Jsoncheck2check2 = tk.Checkbutton(tab2, text = 'Json', variable = Jsoncheck2)
-Jsoncheck2check2.deselect()
-Jsoncheck2check2.grid(column =  1, row = row, sticky=tk.W)
-
-allcheck = tk.IntVar()
-allcheckcheck2 = tk.Checkbutton(tab2, text = 'ALL', variable = allcheck)
-allcheckcheck2.deselect()
-allcheckcheck2.grid(column =  0, row = row, sticky=tk.W)
+##Jsoncheck2 = tk.IntVar()
+##Jsoncheck2check2 = tk.Checkbutton(tab2, text = 'Json', variable = Jsoncheck2)
+##Jsoncheck2check2.deselect()
+##Jsoncheck2check2.grid(column =  1, row = row, sticky=tk.W)
+##
+##allcheck = tk.IntVar()
+##allcheckcheck2 = tk.Checkbutton(tab2, text = 'ALL', variable = allcheck)
+##allcheckcheck2.deselect()
+##allcheckcheck2.grid(column =  0, row = row, sticky=tk.W)
 
 
 
@@ -544,68 +545,110 @@ allcheckcheck2.grid(column =  0, row = row, sticky=tk.W)
 
 
 scrapechecl = tk.IntVar()
-scrapecheclcheck2 = tk.Checkbutton(tab2, text = 'Scrape', variable = scrapechecl, state = 'disabled')
+scrapecheclcheck2 = tk.Checkbutton(tab2, text = 'Scrape & Email', variable = scrapechecl, state = 'disabled')
 scrapecheclcheck2.select()
 scrapecheclcheck2.grid(column = 3, row = 0, sticky=tk.W)
 
 
-scrapechecEmail = tk.IntVar()
-scrapechecEmailcheck2 = tk.Checkbutton(tab2, text = 'Scrape & Email', variable = scrapechecEmail)
-scrapechecEmailcheck2.select()
-scrapechecEmailcheck2.grid(column =  3, row = 1, sticky=tk.W)
+##scrapechecEmail = tk.IntVar()
+##scrapechecEmailcheck2 = tk.Checkbutton(tab2, text = 'Scrape & Email', variable = scrapechecEmail)
+##scrapechecEmailcheck2.select()
+##scrapechecEmailcheck2.grid(column =  3, row = 1, sticky=tk.W)
 
 
 
 
-aLabel2 = ttk.Label(tab2 , text = 'Days:')
-aLabel2.grid(column = 0, row = 2 , sticky="we")
+#aLabel2 = ttk.Label(tab2 , text = 'Days:')
+#aLabel2.grid(column = 0, row = 2 , sticky="we")
 #spinf=tk.IntVar()
-spin = Spinbox(tab2, from_=0, to=7, width=5 ) 
-spin.grid(column=1,row = 2 , sticky="we")
+#spin = Spinbox(tab2, from_=0, to=7, width=5 ) 
+#spin.grid(column=1,row = 2 , sticky="we")
 
 #password5 = tk.IntVar()
 #passwordEntered5 = ttk.Entry(tab2, show="*",width=12,textvariable=password5)
 #passwordEntered5.grid(column=1,row = 2 , sticky="we")
 
-aLabel2 = ttk.Label(tab2 , text = 'Time:')
-aLabel2.grid(column = 0, row = 3 , sticky="we")
+
 #password3 = tk.StringVar()
 #passwordEntered3 = ttk.Entry(tab2, show="*",width=12,textvariable=password3)
 #passwordEntered3.grid()
-spin2 = Spinbox(tab2, from_=0 , to=30 , width=5 ) 
-spin2.grid(column=1,row = 3 , sticky="we")
+
 
 
 aLabel24 = ttk.Label(tab2 , text = 'Every:')
-aLabel24.grid(column = 0, row = 4 , sticky="we")
+aLabel24.grid(column = 0, row = 3 , sticky="we")
+spin3 = Spinbox(tab2, from_=1 , to=60 , width=5 )
+spin3.insert(1, '5')
+spin3.grid(column=1,row = 3 , sticky="we")
+
+
+
+
+#aLabel2 = ttk.Label(tab2 , text = 'Time:')
+#aLabel2.grid(column = 0, row = 4 , sticky="we")
+#spin4pas = tk.StringVar()
+#spin4 = Spinbox(tab2, from_=1 , to=30 , width=5 , textvariable=spin4pas) 
+#spin4.grid(column=1,row = 4 , sticky="we")
+
+
 #passwordl24 = tk.StringVar()
 #passwordEntered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl24)
 #passwordEntered34.grid(column=1,row = 4 , sticky="we")
 
-spin3 = Spinbox(tab2, from_=15 , to=60 , width=5 ) 
-spin3.grid(column=1,row = 4 , sticky="we")
 
 
 
-aLabel245 = ttk.Label(tab2 , text = 'Start:')
-aLabel245.grid(column = 0, row = 5 , sticky="we")
+#aLabel245 = ttk.Label(tab2 , text = 'Start:')
+#aLabel245.grid(column = 0, row = 5 , sticky="we")
 #passwordl245 = tk.StringVar()
 #passwordl245Entered34 = ttk.Entry(tab2, show="*",width=12,textvariable=passwordl245)
 #passwordl245Entered34.grid(column=1,row = 5 , sticky="we")
-spin4 = Spinbox(tab2, from_=0 , to=24 , width=5 ) 
-spin4.grid(column=1,row = 5  , sticky="we")
+#spin4 = Spinbox(tab2, from_=0 , to=24 , width=5 ) 
+#spin4.grid(column=1,row = 5  , sticky="we")
+
+
+#def tab2_action_auto_click():
+ #   scadule1=Schedule( name.get() , password.get() , SendEmail.get() , int(spin3.get()))
+  #  scadule_status=scadule1.schedule_time()
+   # logger.warn("--> "+scadule_status)
+
 
 
 
 def tab2_action_auto_click():
-    pass
+    logger.warn("--> Auto Button Clicked")
+    valid=check(name.get() , password.get())
+    internet_connection = valid.Internet_Connection()
+    if internet_connection == True :
+        Gmail_Status=valid.Gmail_Login()
+        if Gmail_Status == 'Login Successful':
+            logger.warn("--> Gmail Login Successful")
+            website_status= valid.Website_Connection()
+            if website_status == 'Website Working':
+                logger.warn("--> Website Working")
+                scadule1=Schedule( name.get() , password.get() , SendEmail.get() , int(spin3.get()))
+                scadule_status=scadule1.schedule_time()
+                logger.warn("--> "+scadule_status)
+            else:
+                x=messagebox.showinfo(message= "Please wait until the website back" )
+                logger.warn("--> Website Off")
+                
+        elif Gmail_Status == 'Login Failed':
+            logger.warn("--> Login Failed")
+            x=messagebox.showerror("Error", 'Please Check Name,Password & Enabling Third Party at Gmail')
+    else:
+        x=messagebox.showinfo(message= "Please check the internet connection" )
+        logger.warn("--> No Internet Connection")
+
+
+
+
+
+
+
+
 tab2_action_auto = ttk.Button(tab2,text = "Auto" ,command=tab2_action_auto_click)
-tab2_action_auto.grid(column = 3, row = 5,columnspan=3,rowspan=2 , sticky=tk.S)
-
-
-
-
-
+tab2_action_auto.grid(column = 3, row =2 ,columnspan=3,rowspan=2 , sticky=tk.S)
 
 
 

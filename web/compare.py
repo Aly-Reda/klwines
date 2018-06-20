@@ -41,7 +41,7 @@ class base:
         data1=len(dataFrame1.iloc[:,0]) 
         dataFrame2 = pd.read_excel(str(file2))
         data2=len(dataFrame2.iloc[:,0])
-        print(data1)
+        #print(data1)
         if data1 == data2:       
             df1 = pd.read_excel(str(file1))
             df2 = pd.read_excel(str(file2))
