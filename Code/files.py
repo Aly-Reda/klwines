@@ -10,9 +10,9 @@ class give:
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
         Excel_Path = "files\\"+files[0].split('\\')[-1]
         Excel_name =files[0].split('\\')[-1]
-        return Excel_Path ,Excel_name 
+        return Excel_Path ,Excel_name
 
-    def latest_two_files(self):	
+    def latest_two_files(self):
         cwd = os.getcwd()
         folder=cwd.replace('\\','\\\\')+r'\\Files'+r'\\'
         files_path1 = os.path.join(folder, '*.xlsx')
@@ -24,7 +24,3 @@ class give:
         Json_Path  = "Files\\"+json[0].split('\\')[-1]
         Json_name=json[0].split('\\')[-1]
         return  Excel_Path, Json_Path ,Excel_name ,Json_name
-
-
-
-

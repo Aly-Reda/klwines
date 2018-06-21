@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2018/06/14 
+# @Time    : 2018/06/05 
 # @Author  : Aly Reda
-# @Site    : 
-# @File    : GUI.py
+# @Site    : https://klwines.com
+# @File    : klwines.py
 
 import pickle
 from Code.get import scrape as code
@@ -42,7 +42,7 @@ class TextHandler(logging.Handler):
         self.text.after(0, append)
 
 win = tk.Tk()
-win.title("Klwines Scraping")
+win.title("Klwines Scraper")
 win.iconbitmap(r'klwines.ico')
 win.geometry('330x240')
 win.resizable(False, False)

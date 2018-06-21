@@ -19,7 +19,7 @@ class valid:
         host = socket.gethostbyname(REMOTE_SERVER)
         # connect to the host -- tells us if the host is actually
         # reachable
-        s = socket.create_connection((host, 80), 2)
+        socket_host = socket.create_connection((host, 80), 2)
         return True
       except:
          pass
@@ -30,15 +30,15 @@ class valid:
 
     def Website_Connection(self):
         try:
-            r = requests.get("http://www.klwines.com/productfeed?&productTypeCD=10&minprice=&maxprice=&page=1").status_code
-            if r == 200:
-                r='Website Working'
+            request_status = requests.get("http://www.klwines.com/productfeed?&productTypeCD=10&minprice=&maxprice=&page=1").status_code
+            if request_status == 200:
+                request_connect='Website Working'
             else:
-                 r='Website Down'
+                 request_connect='Website Down'
 
         except:
-            r='Website Down'
-        return r
+            request_connect='Website Down'
+        return request_connect
 
     def Gmail_Login(self):
         #print(self.User_Email)
