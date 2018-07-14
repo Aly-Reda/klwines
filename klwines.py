@@ -18,7 +18,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import logging
 import tkinter
-import threading
+from threading import Thread
 import tkinter.scrolledtext as ScrolledText
 import os
 
@@ -626,6 +626,7 @@ def tab2_action_auto_click():
             website_status= valid.Website_Connection()
             if website_status == 'Website Working':
                 logger.warn("--> Website Working")
+                tab2_action_auto = ttk.Button(tab2,text = "Auto"  , state = 'disabled').grid(column = 3, row =2 ,columnspan=3,rowspan=2 , sticky=tk.S)
                 scadule1=Schedule( name.get() , password.get() , SendEmail.get() , int(spin3.get()))
                 scadule_status=scadule1.schedule_time()
                 logger.warn("--> "+scadule_status)
@@ -641,13 +642,16 @@ def tab2_action_auto_click():
         logger.warn("--> No Internet Connection")
 
 
+def schudler():
+    thread01   = Thread(target = tab2_action_auto_click ,)
+    thread01.start()
 
 
 
 
 
 
-tab2_action_auto = ttk.Button(tab2,text = "Auto" ,command=tab2_action_auto_click)
+tab2_action_auto = ttk.Button(tab2,text = "Auto" ,command=schudler )
 tab2_action_auto.grid(column = 3, row =2 ,columnspan=3,rowspan=2 , sticky=tk.S)
 
 
